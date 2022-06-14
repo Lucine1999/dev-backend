@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(250)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  Product   Product[]
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(250)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  Product   Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(500)
+  price       Float    @db.Float
+  discount    Int      @default(0) @db.Int
+  description String?  @db.Text
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  brandId     Int      @db.Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int      @db.Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(250)
+  lastName    String        @db.VarChar(250)
+  email       String        @unique
+  password    String        @db.Text
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  UserAddress UserAddress[]
+}
+
+model UserAddress {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @db.Int
+  address   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}

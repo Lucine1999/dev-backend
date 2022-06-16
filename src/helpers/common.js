@@ -1,4 +1,9 @@
 import { badRequestErrorCreator } from './errors.js'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import app from '../app.js'
+
+const secretKey = app.get('secretKey')
 
 export const validate = (schema) => {
   if (typeof schema !== 'object' || schema === null) throw new Error('Schema is not an object')
@@ -20,3 +25,20 @@ export const responseDataCreator = (data) => ({
   data,
   count: data.length,
 })
+
+export const hashPassword = (password, callback) => {
+  const saltRounds = 8
+  const myPlaintextPassword = password
+
+  bcrypt.hash(myPlaintextPassword, saltRounds, callback)
+}
+
+export const signToken = (payload) => {
+  const token = jwt.sign(payload, secretKey)
+
+  return token
+}
+
+export const validTokenCheck = (token, callback) => {
+  jwt.verify(token, secretKey, callback)
+}

@@ -6,7 +6,7 @@ import path from 'path'
 const app = express()
 
 const env = process.env.NODE_ENV || 'development'
-
+const secretKey = process.env.secretKey
 const configStr = fs.readFileSync(path.resolve('src/config.json'), 'utf-8')
 const config = JSON.parse(configStr)[env]
 
@@ -15,6 +15,7 @@ app.use(logger('dev' /*, { skip: (req, res) => res.statusCode < 400 } */))
 
 app.set('port', process.env.PORT)
 app.set('env', env)
+app.set('secretKey', secretKey)
 app.set('config', config)
 
 export default app

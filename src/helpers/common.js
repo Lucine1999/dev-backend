@@ -10,7 +10,7 @@ export const validate = (schema) => {
 
   return async (req, res, next) => {
     const { params, body } = req
-
+console.log(params, body)
     try {
       schema.params && (await schema.params.validateAsync(params))
       schema.body && (await schema.body.validateAsync(body))
@@ -52,6 +52,10 @@ export const responseProductCreator = (data) => ({
   message: 'Successfully created a new product!!',
 })
 export const responseBrandCreator = (data) => ({
+  data,
+  message: 'Successfully created a new brand!!',
+})
+export const responseCategoryCreator = (data) => ({
   data,
   message: 'Successfully created a new brand!!',
 })

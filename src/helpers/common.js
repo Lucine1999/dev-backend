@@ -10,7 +10,7 @@ export const validate = (schema) => {
 
   return async (req, res, next) => {
     const { params, body } = req
-console.log(params, body)
+    console.log(params, body)
     try {
       schema.params && (await schema.params.validateAsync(params))
       schema.body && (await schema.body.validateAsync(body))
@@ -42,10 +42,6 @@ export const signToken = (payload) => {
 export const validTokenCheck = (token, callback) => {
   jwt.verify(token, secretKey, callback)
 }
-export const responseCompanyCreator = (data) => ({
-  data,
-  message: 'Successfully created a new company!!',
-})
 
 export const responseProductCreator = (data) => ({
   data,

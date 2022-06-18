@@ -2,12 +2,10 @@ import { createProductDB, getAllProductsDB } from './db.js'
 import { responseProductCreator, responseDataCreator } from '../../helpers/common.js'
 
 export const createProduct = async (req, res, next) => {
-  console.log('req.bodyyyyyyyyyyyyyy', req.body)
   try {
     const product = req.body
     const createdProduct = await createProductDB(product)
     // res.json(responseProductCreator(createdProduct))
-    res.send(createdProduct)
     res.json(createdProduct)
   } catch (error) {
     console.log(error.message)
@@ -15,30 +13,30 @@ export const createProduct = async (req, res, next) => {
   }
 }
 
-export const getProduct = async (req, res, next) => {
-  res.send('barev')
-  // const productPrice = req.query.min
-  // console.log(req.query)
+export const getProducts = async (req, res, next) => {
+  const products = await getAllProductsDB()
 
-  // let searchKey = undefined
+  const page = parseInt(req.query.page)
+  const limit = parseInt(req.query.limit)
+  const startIndex = (page - 1) * limit
+  const endIndex = page * limit
 
-  // if (req.query.min || req.query.max) {
-  //   searchKey = {
-  //     where: {
-  //       price: {
-  //         gte: req.query.min && +req.query.min,
-  //         lte: req.query.max && +req.query.max,
-  //       },
-  //     },
-  //   }
-  // }
+  const results = {}
+  if (endIndex < products.data.length) {
+    results.next = {
+      page: page + 1,
+      limit: limit,
+    }
+  }
 
-  // console.log(searchKey)
+  if (startIndex > 0) {
+    results.previous = {
+      page: page - 1,
+      limit: limit,
+    }
+  }
 
-  // try {
-  //   const companies = await getAllProductsDB(searchKey)
-  //   res.json(responseDataCreator(companies))
-  // } catch (error) {
-  //   next(error)
-  // }
+  results.results = products.data.slice(startIndex, endIndex)
+
+  res.json(results)
 }

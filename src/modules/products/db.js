@@ -16,3 +16,23 @@ export const getAllProductsDB = async () => {
     }
   }
 }
+
+export const createProductDB = async (productData) => {
+  console.log('productData', productData)
+
+  try {
+    const createdProduct = await product.create({
+      data: productData,
+    })
+    return {
+      data: createdProduct,
+      error: null,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      data: null,
+      error,
+    }
+  }
+}

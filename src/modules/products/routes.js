@@ -7,7 +7,7 @@ const { createProductSchema, getProductByIdSchema } = validations
 
 const router = Router()
 
-router.post('/', createProduct)
+router.post('/', validate(createProductSchema), createProduct)
 router.get('/getProduct',  getProduct)
 
 export { router as productsRoutes }

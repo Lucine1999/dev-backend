@@ -51,3 +51,7 @@ export const responseProductCreator = (data) => ({
   data,
   message: 'Successfully created a new product!!',
 })
+export const responseBrandCreator = (data) => ({
+  data,
+  message: 'Successfully created a new brand!!',
+})

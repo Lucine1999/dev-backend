@@ -45,6 +45,8 @@ model User {
   password    String        @db.Text
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt
+  role        Role?         @relation(fields: [roleId], references: [id])
+  roleId      Int
   UserAddress UserAddress[]
 }
 
@@ -55,4 +57,10 @@ model UserAddress {
   address   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(60)
+  User User[]
 }

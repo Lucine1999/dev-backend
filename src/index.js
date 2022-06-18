@@ -2,12 +2,14 @@ import app from './app.js'
 import * as routes from './api/index.js'
 import { internalServerErrorCreator, notFoundErrorCreator } from './helpers/errors.js'
 
+
 const PORT = app.get('port')
 const { API_VERSIONS } = app.get('config')
 
 API_VERSIONS.forEach((version) => app.use(`/api/${version}`, routes[version]))
 
 // handle 404 error
+
 app.use((req, res, next) => {
   next(notFoundErrorCreator())
 })

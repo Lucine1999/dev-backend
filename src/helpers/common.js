@@ -42,3 +42,12 @@ export const signToken = (payload) => {
 export const validTokenCheck = (token, callback) => {
   jwt.verify(token, secretKey, callback)
 }
+export const responseCompanyCreator = (data) => ({
+  data,
+  message: 'Successfully created a new company!!',
+})
+
+export const responseProductCreator = (data) => ({
+  data,
+  message: 'Successfully created a new product!!',
+})

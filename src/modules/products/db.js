@@ -36,3 +36,25 @@ export const createProductDB = async (productData) => {
     }
   }
 }
+export const updateProductDB = async (id, data) => {
+ 
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: Number(id)
+      },
+      data: {
+       ...data
+      },
+    });
+    return {
+      data: updatedProduct,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
+}

@@ -57,4 +57,23 @@ export const updateProductDB = async (id, data) => {
       error: error,
     }
   }
+
+}
+export const deleteProductDB = async (id) => {
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: {
+        id: Number(id),
+      },
+    })
+    return {
+      data: deletedProduct,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
 }

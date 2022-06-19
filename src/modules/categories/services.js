@@ -1,12 +1,22 @@
-import { createCategoryDB, getAllCategoriesDB } from './db.js'
+import { createCategoryDB, getAllCategoriesDB, updateCategoryDB, deleteCategoryDB } from './db.js'
 import { responseCategoryCreator } from '../../helpers/common.js'
+import { deleteProducstDB } from '../products/db.js'
 
-export const createCategory= async (req, res, next) => {
-  console.log(req.body)
+export const getCategory = async (req, res, next) => {
+  try {
+    const products = await getAllCategoriesDB()
+    res.json(products.data)
+  } catch (error) {
+    console.log(error.message)
+    next(error)
+  }
+}
+
+export const createCategory = async (req, res, next) => {
   try {
     const brand = req.body
     const createdCategory = await createCategoryDB(brand)
-    
+
     res.json(responseCategoryCreator(createdCategory))
   } catch (error) {
     console.log(error.message)
@@ -14,30 +24,24 @@ export const createCategory= async (req, res, next) => {
   }
 }
 
-export const getCategory = async (req, res, next) => {
-  res.send('barev')
-  // const productPrice = req.query.min
-  // console.log(req.query)
-
-  // let searchKey = undefined
-
-  // if (req.query.min || req.query.max) {
-  //   searchKey = {
-  //     where: {
-  //       price: {
-  //         gte: req.query.min && +req.query.min,
-  //         lte: req.query.max && +req.query.max,
-  //       },
-  //     },
-  //   }
-  // }
-
-  // console.log(searchKey)
-
-  // try {
-  //   const companies = await getAllProductsDB(searchKey)
-  //   res.json(responseDataCreator(companies))
-  // } catch (error) {
-  //   next(error)
-  // }
+export const updateCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const updatedCategory = await updateCategoryDB(id, req.body)
+    res.json(updatedCategory.data)
+  } catch (error) {
+    console.log(error.message)
+    next(error)
+  }
+}
+export const deleteCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const deletedProducts = await deleteProducstDB(id)
+    const deletedCategory = await deleteCategoryDB(id)
+    res.json({ deletedCategory, deletedProducts })
+  } catch (error) {
+    console.log(error.message)
+    next(error)
+  }
 }

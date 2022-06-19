@@ -18,8 +18,6 @@ export const getAllProductsDB = async () => {
 }
 
 export const createProductDB = async (productData) => {
-  console.log('productData', productData)
-
   try {
     const createdProduct = await product.create({
       data: productData,
@@ -39,7 +37,7 @@ export const createProductDB = async (productData) => {
 export const updateProductDB = async (id, data) => {
  
   try {
-    const updatedProduct = await prisma.product.update({
+    const updatedProduct = await product.update({
       where: {
         id: Number(id)
       },
@@ -61,13 +59,31 @@ export const updateProductDB = async (id, data) => {
 }
 export const deleteProductDB = async (id) => {
   try {
-    const deletedProduct = await prisma.product.delete({
+    const deletedProduct = await product.delete({
       where: {
         id: Number(id),
       },
     })
     return {
       data: deletedProduct,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
+}
+export const deleteProducstDB = async (id) => {
+  try {
+    const deletedProducts = await product.deleteMany({
+      where: {
+        categoryId: Number(id),
+      },
+    })
+    return {
+      data: deletedProducts,
       error: null,
     }
   } catch (error) {

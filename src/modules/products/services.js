@@ -1,4 +1,4 @@
-import { createProductDB, getAllProductsDB } from './db.js'
+import { createProductDB, getAllProductsDB, updateProductDB, deleteProductDB } from './db.js'
 import { responseProductCreator, responseDataCreator } from '../../helpers/common.js'
 
 export const createProduct = async (req, res, next) => {
@@ -39,4 +39,14 @@ export const getProducts = async (req, res, next) => {
   results.results = products.data.slice(startIndex, endIndex)
 
   res.json(results)
+}
+export const updateProduct = async (req, res, next) => {
+  const { id } = req.params
+  const updatedProduct = await updateProductDB(id, req.body)
+  res.json(updatedProduct.data)
+}
+export const deleteProduct = async (req, res, next) => {
+  const { id } = req.params
+  const deletedProduct = await deleteProductDB(id)
+  res.json(deletedProduct.data)
 }

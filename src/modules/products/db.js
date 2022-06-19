@@ -18,8 +18,6 @@ export const getAllProductsDB = async () => {
 }
 
 export const createProductDB = async (productData) => {
-  console.log('productData', productData)
-
   try {
     const createdProduct = await product.create({
       data: productData,
@@ -33,6 +31,65 @@ export const createProductDB = async (productData) => {
     return {
       data: null,
       error,
+    }
+  }
+}
+export const updateProductDB = async (id, data) => {
+ 
+  try {
+    const updatedProduct = await product.update({
+      where: {
+        id: Number(id)
+      },
+      data: {
+       ...data
+      },
+    });
+    return {
+      data: updatedProduct,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
+
+}
+export const deleteProductDB = async (id) => {
+  try {
+    const deletedProduct = await product.delete({
+      where: {
+        id: Number(id),
+      },
+    })
+    return {
+      data: deletedProduct,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
+}
+export const deleteProducstDB = async (id) => {
+  try {
+    const deletedProducts = await product.deleteMany({
+      where: {
+        categoryId: Number(id),
+      },
+    })
+    return {
+      data: deletedProducts,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
     }
   }
 }

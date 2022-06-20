@@ -6,9 +6,8 @@ import { createProduct, getProducts,updateProduct, deleteProduct } from './servi
 const { createProductSchema, getProductByIdSchema } = validations
 
 const router = Router()
-
-router.post('/',  createProduct)
 router.get('/getProducts',  getProducts)
+router.post('/',  createProduct)
 router.put('/update/:id',  updateProduct)
 router.delete('/delete/:id', deleteProduct)
 

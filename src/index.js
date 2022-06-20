@@ -2,8 +2,12 @@ import app from './app.js'
 import * as routes from './api/index.js'
 import { internalServerErrorCreator, notFoundErrorCreator } from './helpers/errors.js'
 
-
 const PORT = app.get('port')
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', '*')
+  next()
+})
 const { API_VERSIONS } = app.get('config')
 
 API_VERSIONS.forEach((version) => app.use(`/api/${version}`, routes[version]))

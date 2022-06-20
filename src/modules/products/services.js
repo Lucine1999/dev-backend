@@ -35,11 +35,13 @@ export const getProducts = async (req, res, next) => {
       limit: limit,
     }
   }
-
+  results.length = Math.ceil(products.data.length / 9)
   results.results = products.data.slice(startIndex, endIndex)
 
-  res.json(results)
+  res.send(results)
+  // res.json(results)
 }
+
 export const updateProduct = async (req, res, next) => {
   const { id } = req.params
   const updatedProduct = await updateProductDB(id, req.body)

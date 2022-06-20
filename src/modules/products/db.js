@@ -75,7 +75,7 @@ export const deleteProductDB = async (id) => {
     }
   }
 }
-export const deleteProducstDB = async (id) => {
+export const deleteProducstByCategoryDB = async (id) => {
   try {
     const deletedProducts = await product.deleteMany({
       where: {

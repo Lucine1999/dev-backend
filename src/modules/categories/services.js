@@ -1,6 +1,6 @@
 import { createCategoryDB, getAllCategoriesDB, updateCategoryDB, deleteCategoryDB } from './db.js'
 import { responseCategoryCreator } from '../../helpers/common.js'
-import { deleteProducstDB } from '../products/db.js'
+import { deleteProducstByCategoryDB } from '../products/db.js'
 
 export const getCategory = async (req, res, next) => {
   try {
@@ -37,7 +37,7 @@ export const updateCategory = async (req, res, next) => {
 export const deleteCategory = async (req, res, next) => {
   try {
     const { id } = req.params
-    const deletedProducts = await deleteProducstDB(id)
+    const deletedProducts = await deleteProducstByCategoryDB(id)
     const deletedCategory = await deleteCategoryDB(id)
     res.json({ deletedCategory, deletedProducts })
   } catch (error) {

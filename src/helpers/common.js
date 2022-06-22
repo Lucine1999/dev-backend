@@ -23,21 +23,27 @@ export const validate = (schema) => {
   };
 };
 
-export const responseDataCreator = (data) => ({
+export const responseDataCreator = ({ data }) => ({
   data,
   count: data.length,
 });
 
-export const hashPassword = (password, callback) => {
+export const hashPassword = async (password) => {
   const saltRounds = 8;
   const myPlaintextPassword = password;
 
-  bcrypt.hash(myPlaintextPassword, saltRounds, callback);
+  const hashedPassword = await bcrypt.hash(myPlaintextPassword, saltRounds);
+  return hashedPassword;
+};
+
+export const comparePassword = async (password, hashedPassword) => {
+  const compareResult = await bcrypt.compare(password, hashedPassword);
+  return compareResult;
 };
 
 export const signToken = (payload, type) => {
   const key = type === "access" ? accessKey : refreshKey;
-  const expirationDate = type === "access" ? 1 * 60 * 1000 : 60 * 60 * 30;
+  const expirationDate = type === "access" ? 0.5 * 1 : 1 * 5; //seconds - minutes
   const token = jwt.sign(payload, key, {
     expiresIn: expirationDate,
   });
@@ -47,6 +53,17 @@ export const signToken = (payload, type) => {
 
 export const validTokenCheck = (token, type) => {
   const key = type === "access" ? accessKey : refreshKey;
-  const result = jwt.decode(token, key);
+  const result = {
+    decode: {},
+    error: null,
+  };
+
+  try {
+    result.decode = jwt.decode(token, key); //decode to get user id
+    jwt.verify(token, key); //verify to check token is valid or not
+  } catch (err) {
+    result.error = err;
+  }
+
   return result;
 };

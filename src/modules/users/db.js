@@ -16,7 +16,7 @@ export const getAllUsersDb = async () => {
     };
   }
 };
-export const getUserByIdDB = async (id) => {
+export const getUserByIdDb = async (id) => {
   // ??????????? password mez petqa vor get anel
   try {
     const users = await user.findUnique({
@@ -26,6 +26,25 @@ export const getUserByIdDB = async (id) => {
     });
     return {
       data: users,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    };
+  }
+};
+
+export const getUserByEmailDb = async (email) => {
+  try {
+    const userData = await user.findUnique({
+      where: {
+        email,
+      },
+    });
+    return {
+      data: userData,
       error: null,
     };
   } catch (error) {
@@ -55,7 +74,7 @@ export const createUserDb = async (sendedData) => {
 
 export const addUserRefreshToken = async (id, token) => {
   try {
-    const refreshToken = await user.update({
+    const updatedUser = await user.update({
       where: {
         id,
       },
@@ -64,7 +83,7 @@ export const addUserRefreshToken = async (id, token) => {
       },
     });
     return {
-      data: refreshToken,
+      data: updatedUser,
       error: null,
     };
   } catch (error) {

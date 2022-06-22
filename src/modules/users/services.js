@@ -3,18 +3,21 @@ import {
   hashPassword,
   signToken,
   validTokenCheck,
+  comparePassword,
 } from "../../helpers/common.js";
 import {
   getAllUsersDb,
   createUserDb,
-  getUserByIdDB,
+  getUserByIdDb,
   addUserRefreshToken,
+  getUserByEmailDb,
 } from "./db.js";
 
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await getAllUsersDb();
-    res.json(responseDataCreator(users));
+    const userData = responseDataCreator(users);
+    res.json({ ...userData, isAuth: res.locals.isAuth, user: res.locals.user });
   } catch (error) {
     next(error);
   }
@@ -26,49 +29,75 @@ export const getUserById = async (req, res, next) => {
       return next();
     }
     const userData = +req.params.userId;
-    const user = await getUserByIdDB(userData);
+    const user = await getUserByIdDb(userData);
     res.json(user);
   } catch (err) {
     next(err);
   }
 };
 
-export const createUser = (req, res, next) => {
+export const createUser = async (req, res, next) => {
   try {
-    const password = req.body.password;
+    const { password, email } = req.body;
 
-    hashPassword(password, async (err, hash) => {
-      if (err) {
-        return next(err);
-      }
+    const userExists = await getUserByEmailDb(email);
+    if (userExists.data) {
+      return res.status(400).send("User with this email already exists");
+    }
+    const hashedPassword = await hashPassword(password);
+    const userData = {
+      ...req.body,
+      password: hashedPassword,
+    };
 
-      const userData = {
-        ...req.body,
-        password: hash,
-      };
-      const user = await createUserDb(userData);
+    const user = await createUserDb(userData);
 
-      if (user.error) {
-        if (user.error.code === "P2002") {
-          return res.status(400).send("User with this email already exists");
-        }
-        return next(user.error);
-      }
-      const userId = user.data.id;
+    const userId = user.data.id;
 
-      const accessToken = signToken({
-        id: userId,
-      });
-      const refreshToken = signToken({
-        id: userId,
-      });
-      await addUserRefreshToken(userId, refreshToken);
-      res.cookie("access-token", accessToken, {
-        // maxAge: 1 * 60 * 1000,
-        httpOnly: true,
-      });
-      res.json({ accessToken, data: user.data });
+    const accessToken = signToken({
+      id: userId,
     });
+    const refreshToken = signToken({
+      id: userId,
+    });
+    await addUserRefreshToken(userId, refreshToken);
+    res.cookie("access-token", accessToken, {
+      httpOnly: true,
+    });
+    res.json({ data: user.data, isAuth: true });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await getUserByEmailDb(email);
+
+    if (user.error || !user.data) {
+      return res.status(401).send("Invalid username or password");
+    }
+
+    const checkPassword = await comparePassword(password, user.data.password);
+    if (!checkPassword) {
+      res.status(401).send("Invalid username or password");
+    }
+
+    const userId = user.data.id;
+    const accessToken = signToken({
+      id: userId,
+    });
+    const refreshToken = signToken({
+      id: userId,
+    });
+
+    await addUserRefreshToken(userId, refreshToken);
+
+    res.cookie("access-token", accessToken, {
+      httpOnly: true,
+    });
+    return res.json({ data: user.data, isAuth: true });
   } catch (err) {
     next(err);
   }
@@ -79,23 +108,36 @@ export const verifyUser = async (req, res, next) => {
     const accessToken = req.cookies["access-token"];
     if (!accessToken) {
       res.locals.isAuth = false;
-      return res.send("123");
-      // next();
+      return next();
     }
-    const { id, exp } = validTokenCheck(accessToken, "access");
-    const user = await getUserByIdDB(id);
-    if (Date.now() >= exp * 1000) {
-      const accessToken = signToken(id);
-      const refreshToken = signToken(id);
-      await addUserRefreshToken(id, refreshToken);
-      res.cookie("access-token", accessToken, {
-        // maxAge: 1 * 60 * 1000,
-        httpOnly: true,
-      });
+
+    const accessTokenCheck = validTokenCheck(accessToken, "access");
+    const id = accessTokenCheck.decode.id;
+
+    const user = await getUserByIdDb(id);
+
+    if (accessTokenCheck.error) {
+      const refreshTokenCheck = validTokenCheck(
+        user.data.refreshToken,
+        "refresh",
+      );
+      if (refreshTokenCheck.error) {
+        res.locals.isAuth = false;
+        return next();
+      }
     }
+
+    const newAccessToken = signToken({ id }, "access");
+    const newRefreshToken = signToken({ id }, "refresh");
+
+    const updatedUser = await addUserRefreshToken(id, newRefreshToken);
+    res.cookie("access-token", newAccessToken, {
+      httpOnly: true,
+    });
+
     res.locals.isAuth = true;
-    res.locals.user = user;
-    res.send("456");
+    res.locals.user = updatedUser.data;
+    return next();
   } catch (err) {
     next(err);
   }

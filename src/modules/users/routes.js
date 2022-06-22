@@ -1,14 +1,20 @@
-import { Router } from 'express'
-import { validate } from '../../helpers/common.js'
-import validations from './validations.js'
-import { getAllUsers, getUserById, createUser, verifyUser } from './services.js'
+import { Router } from "express";
+import { validate } from "../../helpers/common.js";
+import validations from "./validations.js";
+import {
+  getAllUsers,
+  getUserById,
+  createUser,
+  verifyUser,
+  loginUser,
+} from "./services.js";
 
-const { getUserByIdSchema, createUserSchema } = validations
+const { getUserByIdSchema, createUserSchema, loginUserSchema } = validations;
 
-const router = Router()
+const router = Router();
 
-router.get('/', getAllUsers)
-router.get('/:userId', validate(getUserByIdSchema), getUserById)
-router.post('/user', validate(createUserSchema), createUser)
-router.post('/verifyUser', verifyUser)
-export { router as usersRoutes }
+router.get("/", verifyUser, getAllUsers);
+router.get("/:userId", validate(getUserByIdSchema), getUserById);
+router.post("/signIn", validate(loginUserSchema), loginUser);
+router.post("/createUser", validate(createUserSchema), createUser);
+export { router as usersRoutes };

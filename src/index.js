@@ -1,35 +1,31 @@
-import app from './app.js'
-import * as routes from './api/index.js'
-import { internalServerErrorCreator, notFoundErrorCreator } from './helpers/errors.js'
+import app from "./app.js";
+import { routes } from "./api/index.js";
+import {
+  internalServerErrorCreator,
+  notFoundErrorCreator,
+} from "./helpers/errors.js";
 
-const PORT = app.get('port')
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', '*')
-  next()
-})
-const { API_VERSIONS } = app.get('config')
-
-API_VERSIONS.forEach((version) => app.use(`/api/${version}`, routes[version]))
-
+const PORT = app.get("port");
+app.use(routes);
 // handle 404 error
 
 app.use((req, res, next) => {
-  next(notFoundErrorCreator())
-})
+  next(notFoundErrorCreator());
+});
 
 // handle errors
 // eslint-disable-next-line
-
 app.use((err, req, res, next) => {
-  const error = err.status ? err : internalServerErrorCreator()
-  const status = err.status || 500
+  const error = err.status ? err : internalServerErrorCreator();
+  const status = error.status;
 
-  console.log(error.stack)
+  console.log(error.stack);
 
-  res.status(status).json(error)
-})
+  res.status(status).json(error);
+});
 
 app.listen(PORT, function () {
-  console.log(`\n🚀 Server ready at: http://localhost:${this.address().port}\n`)
-})
+  console.log(
+    `\n🚀 Server ready at: http://localhost:${this.address().port}\n`,
+  );
+});

@@ -1,57 +1,81 @@
-import { badRequestErrorCreator } from './errors.js'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import app from '../app.js'
+import { badRequestErrorCreator } from "./errors.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import app from "../app.js";
 
-const secretKey = app.get('secretKey')
+const accessKey = app.get("accessKey");
+const refreshKey = app.get("refreshKey");
 
 export const validate = (schema) => {
-  if (typeof schema !== 'object' || schema === null) throw new Error('Schema is not an object')
+  if (typeof schema !== "object" || schema === null)
+    throw new Error("Schema is not an object");
 
   return async (req, res, next) => {
-    const { params, body } = req
-    console.log(params, body)
-    try {
-      schema.params && (await schema.params.validateAsync(params))
-      schema.body && (await schema.body.validateAsync(body))
-      return next()
-    } catch (error) {
-      next(badRequestErrorCreator(error.details))
-    }
-  }
-}
+    const { params, body } = req;
 
-export const responseDataCreator = (data) => ({
+    try {
+      schema.params && (await schema.params.validateAsync(params));
+      schema.body && (await schema.body.validateAsync(body));
+      return next();
+    } catch (error) {
+      next(badRequestErrorCreator(error.details));
+    }
+  };
+};
+
+export const responseDataCreator = ({ data }) => ({
   data,
   count: data.length,
-})
-
-export const hashPassword = (password, callback) => {
-  const saltRounds = 8
-  const myPlaintextPassword = password
-
-  bcrypt.hash(myPlaintextPassword, saltRounds, callback)
-}
-
-export const signToken = (payload) => {
-  const token = jwt.sign(payload, secretKey)
-
-  return token
-}
-
-export const validTokenCheck = (token, callback) => {
-  jwt.verify(token, secretKey, callback)
-}
+});
 
 export const responseProductCreator = (data) => ({
   data,
-  message: 'Successfully created a new product!!',
-})
+  message: "Successfully created a new product!!",
+});
 export const responseBrandCreator = (data) => ({
   data,
-  message: 'Successfully created a new brand!!',
-})
+  message: "Successfully created a new brand!!",
+});
 export const responseCategoryCreator = (data) => ({
   data,
-  message: 'Successfully created a new brand!!',
-})
+  message: "Successfully created a new brand!!",
+});
+
+export const hashPassword = async (password) => {
+  const saltRounds = 8;
+  const myPlaintextPassword = password;
+
+  const hashedPassword = await bcrypt.hash(myPlaintextPassword, saltRounds);
+  return hashedPassword;
+};
+
+export const comparePassword = async (password, hashedPassword) => {
+  const compareResult = await bcrypt.compare(password, hashedPassword);
+  return compareResult;
+};
+
+export const signToken = (payload, type) => {
+  const key = type === "access" ? accessKey : refreshKey;
+  const expirationDate = type === "access" ? 0.5 * 1 : 1 * 5; //seconds - minutes
+  const token = jwt.sign(payload, key, {
+    expiresIn: expirationDate,
+  });
+  return token;
+};
+
+export const validTokenCheck = (token, type) => {
+  const key = type === "access" ? accessKey : refreshKey;
+  const result = {
+    decode: {},
+    error: null,
+  };
+
+  try {
+    result.decode = jwt.decode(token, key); //decode to get user id
+    jwt.verify(token, key); //verify to check token is valid or not
+  } catch (err) {
+    result.error = err;
+  }
+
+  return result;
+};

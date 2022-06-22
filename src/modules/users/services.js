@@ -3,79 +3,142 @@ import {
   hashPassword,
   signToken,
   validTokenCheck,
-} from '../../helpers/common.js'
-import { getAllUsersDb, createUserDb, getUserByIdDB } from './db.js'
+  comparePassword,
+} from "../../helpers/common.js";
+import {
+  getAllUsersDb,
+  createUserDb,
+  getUserByIdDb,
+  addUserRefreshToken,
+  getUserByEmailDb,
+} from "./db.js";
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await getAllUsersDb()
-    res.json(responseDataCreator(users))
+    const users = await getAllUsersDb();
+    const userData = responseDataCreator(users);
+    res.json({ ...userData, isAuth: res.locals.isAuth, user: res.locals.user });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 export const getUserById = async (req, res, next) => {
   try {
     if (!req.params) {
-      return next()
+      return next();
     }
-    const userData = +req.params.userId
-    const user = await getUserByIdDB(userData)
-    res.json(user)
+    const userData = +req.params.userId;
+    const user = await getUserByIdDb(userData);
+    res.json(user);
   } catch (err) {
-    next(err)
+    next(err);
   }
-}
+};
 
-export const createUser = (req, res, next) => {
+export const createUser = async (req, res, next) => {
   try {
-    const password = req.body.password
+    const { password, email } = req.body;
 
-    hashPassword(password, async (err, hash) => {
-      if (err) {
-        return next(err)
-      }
-
-      const userData = {
-        ...req.body,
-        password: hash,
-      }
-      const user = await createUserDb(userData)
-
-      if (user.error) {
-        return next(user.error)
-      }
-      const userIdPayload = {
-        id: user.data.id,
-      }
-
-      const token = signToken(userIdPayload)
-      const tokenResponse = {
-        token,
-      }
-
-      res.json(tokenResponse)
-    })
-  } catch (err) {
-    next(err)
-  }
-}
-
-export const verifyUser = (req, res, next) => {
-  try {
-    if (!req.headers.token) {
-      return next()
+    const userExists = await getUserByEmailDb(email);
+    if (userExists.data) {
+      return res.status(400).send("User with this email already exists");
     }
-    const token = req.headers.token
+    const hashedPassword = await hashPassword(password);
+    const userData = {
+      ...req.body,
+      password: hashedPassword,
+    };
 
-    validTokenCheck(token, (err, decoded) => {
-      if (err) {
-        return next(err)
-      }
-      res.send(decoded)
-    })
+    const user = await createUserDb(userData);
+
+    const userId = user.data.id;
+
+    const accessToken = signToken({
+      id: userId,
+    });
+    const refreshToken = signToken({
+      id: userId,
+    });
+    await addUserRefreshToken(userId, refreshToken);
+    res.cookie("access-token", accessToken, {
+      httpOnly: true,
+    });
+    res.json({ data: user.data, isAuth: true });
   } catch (err) {
-    next(err)
+    next(err);
   }
-}
+};
+
+export const loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await getUserByEmailDb(email);
+
+    if (user.error || !user.data) {
+      return res.status(401).send("Invalid username or password");
+    }
+
+    const checkPassword = await comparePassword(password, user.data.password);
+    if (!checkPassword) {
+      res.status(401).send("Invalid username or password");
+    }
+
+    const userId = user.data.id;
+    const accessToken = signToken({
+      id: userId,
+    });
+    const refreshToken = signToken({
+      id: userId,
+    });
+
+    await addUserRefreshToken(userId, refreshToken);
+
+    res.cookie("access-token", accessToken, {
+      httpOnly: true,
+    });
+    return res.json({ data: user.data, isAuth: true });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const verifyUser = async (req, res, next) => {
+  try {
+    const accessToken = req.cookies["access-token"];
+    if (!accessToken) {
+      res.locals.isAuth = false;
+      return next();
+    }
+
+    const accessTokenCheck = validTokenCheck(accessToken, "access");
+    const id = accessTokenCheck.decode.id;
+
+    const user = await getUserByIdDb(id);
+
+    if (accessTokenCheck.error) {
+      const refreshTokenCheck = validTokenCheck(
+        user.data.refreshToken,
+        "refresh",
+      );
+      if (refreshTokenCheck.error) {
+        res.locals.isAuth = false;
+        return next();
+      }
+    }
+
+    const newAccessToken = signToken({ id }, "access");
+    const newRefreshToken = signToken({ id }, "refresh");
+
+    const updatedUser = await addUserRefreshToken(id, newRefreshToken);
+    res.cookie("access-token", newAccessToken, {
+      httpOnly: true,
+    });
+
+    res.locals.isAuth = true;
+    res.locals.user = updatedUser.data;
+    return next();
+  } catch (err) {
+    next(err);
+  }
+};

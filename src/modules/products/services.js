@@ -8,6 +8,7 @@ import {
 export const createProduct = async (req, res, next) => {
   try {
     const product = req.body;
+
     const createdProduct = await createProductDB(product);
     res.json({
       data: createdProduct,

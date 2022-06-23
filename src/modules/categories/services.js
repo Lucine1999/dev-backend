@@ -8,8 +8,8 @@ import { deleteProducstByCategoryDB } from "../products/db.js";
 
 export const getCategories = async (req, res, next) => {
   try {
-    const products = await getAllCategoriesDB();
-    res.json(products.data);
+    const categories = await getAllCategoriesDB();
+    res.json(categories.data);
   } catch (error) {
     console.log(error.message);
     next(error);

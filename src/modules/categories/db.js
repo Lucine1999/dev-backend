@@ -1,6 +1,6 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { category, product } = prisma
+const { category } = prisma
 
 export const getAllCategoriesDB = async (searchKey) => {
   try {

@@ -52,9 +52,13 @@ model User {
   updatedAt       DateTime @default(now()) @updatedAt
 }
 
+model Wishlist {
+  id Int @id @default(autoincrement())
+
+}
+
 enum Role {
   USER
   ADMIN
   MAIN_ADMIN
 }
-

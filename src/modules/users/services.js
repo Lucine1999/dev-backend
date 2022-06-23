@@ -54,12 +54,18 @@ export const createUser = async (req, res, next) => {
 
     const userId = user.data.id;
 
-    const accessToken = signToken({
-      id: userId,
-    });
-    const refreshToken = signToken({
-      id: userId,
-    });
+    const accessToken = signToken(
+      {
+        id: userId,
+      },
+      "access",
+    );
+    const refreshToken = signToken(
+      {
+        id: userId,
+      },
+      "refresh",
+    );
     await addUserRefreshToken(userId, refreshToken);
     res.cookie("access-token", accessToken, {
       httpOnly: true,
@@ -85,12 +91,18 @@ export const loginUser = async (req, res, next) => {
     }
 
     const userId = user.data.id;
-    const accessToken = signToken({
-      id: userId,
-    });
-    const refreshToken = signToken({
-      id: userId,
-    });
+    const accessToken = signToken(
+      {
+        id: userId,
+      },
+      "access",
+    );
+    const refreshToken = signToken(
+      {
+        id: userId,
+      },
+      "refresh",
+    );
 
     await addUserRefreshToken(userId, refreshToken);
 

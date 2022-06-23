@@ -93,3 +93,21 @@ export const deleteProducstByCategoryDB = async (id) => {
     }
   }
 }
+export const deleteProducstByBrandDB = async (id) => {
+  try {
+    const deletedProducts = await product.deleteMany({
+      where: {
+        brandId: Number(id),
+      },
+    })
+    return {
+      data: deletedProducts,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
+}

@@ -65,7 +65,7 @@ export const deleteCategoryDB = async (id) => {
     })
 
     return {
-      data: { deletedCategory, products },
+      data: { deletedCategory },
       error: null,
     }
   } catch (error) {

@@ -35,3 +35,44 @@ export const createBrandDB = async (brandData) => {
     }
   }
 }
+export const updateBrandDB = async (id, data) => {
+  try {
+    const updatedBrand = await brand.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        ...data,
+      },
+    })
+    return {
+      data: updatedBrand,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
+}
+export const deleteBrandDB = async (id) => {
+  try {
+   
+    const deletedBrand = await brand.delete({
+      where: {
+        id: Number(id),
+      },
+    })
+
+    return {
+      data: { deletedBrand},
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    }
+  }
+}

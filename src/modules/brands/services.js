@@ -13,7 +13,7 @@ export const createBrand = async (req, res, next) => {
     const createdBrand = await createBrandDB(brand);
 
     res.json({
-      data:createdBrand,
+      data: createdBrand,
       message: "Successfully created a new brand!!",
     });
   } catch (error) {

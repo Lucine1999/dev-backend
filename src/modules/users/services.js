@@ -116,6 +116,7 @@ export const verifyUser = async (req, res, next) => {
     const accessToken = req.cookies["access-token"];
     if (!accessToken) {
       res.locals.isAuth = false;
+      res.locals.user = {};
       res.clearCookie("access-token");
       return next();
     }
@@ -132,6 +133,7 @@ export const verifyUser = async (req, res, next) => {
       );
       if (refreshTokenCheck.error) {
         res.locals.isAuth = false;
+        res.locals.user = {};
         return next();
       }
     }

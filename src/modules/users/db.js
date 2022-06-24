@@ -93,3 +93,25 @@ export const addUserRefreshToken = async (id, token) => {
     };
   }
 };
+
+export const removeUserRefreshToken = async (id) => {
+  try {
+    const updatedUser = await user.update({
+      where: {
+        id,
+      },
+      data: {
+        refreshToken: null,
+      },
+    });
+    return {
+      data: updatedUser,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    };
+  }
+};

@@ -56,7 +56,7 @@ export const comparePassword = async (password, hashedPassword) => {
 
 export const signToken = (payload, type) => {
   const key = type === "access" ? accessKey : refreshKey;
-  const expirationDate = type === "access" ? 0.5 * 1 : 1 * 5; //seconds - minutes
+  const expirationDate = type === "access" ? 60 * 60 : 60 * 60 * 30; //seconds - minutes
   const token = jwt.sign(payload, key, {
     expiresIn: expirationDate,
   });

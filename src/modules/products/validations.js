@@ -1,4 +1,4 @@
-import Joi from 'joi'
+import Joi from "joi";
 
 export default {
   getProductByIdSchema: {
@@ -12,4 +12,4 @@ export default {
       price: Joi.number().integer().required(),
     }),
   },
-}
+};

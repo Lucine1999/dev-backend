@@ -1,22 +1,22 @@
-import { prisma } from '../../services/Prisma.js'
+import { prisma } from "../../services/Prisma.js";
 
-const { role } = prisma
+const { role } = prisma;
 export const getAllRolesDB = async () => {
   try {
-    const allRoles = await role.findMany()
-    console.log(allRoles)
+    const allRoles = await role.findMany();
+    console.log(allRoles);
     return {
       data: allRoles,
       error: null,
-    }
+    };
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return {
       data: null,
       error: error,
-    }
+    };
   }
-}
+};
 
 export const getRoleById = async (id) => {
   try {
@@ -24,18 +24,18 @@ export const getRoleById = async (id) => {
       where: {
         id,
       },
-    })
+    });
     return {
       data: rolesbyId,
       error: null,
-    }
+    };
   } catch (error) {
     return {
       data: null,
       error: error,
-    }
+    };
   }
-}
+};
 
 // export const createUser() {
 

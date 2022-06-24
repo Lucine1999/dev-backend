@@ -28,19 +28,6 @@ export const responseDataCreator = ({ data }) => ({
   count: data.length,
 });
 
-export const responseProductCreator = (data) => ({
-  data,
-  message: "Successfully created a new product!!",
-});
-export const responseBrandCreator = (data) => ({
-  data,
-  message: "Successfully created a new brand!!",
-});
-export const responseCategoryCreator = (data) => ({
-  data,
-  message: "Successfully created a new brand!!",
-});
-
 export const hashPassword = async (password) => {
   const saltRounds = 8;
   const myPlaintextPassword = password;
@@ -60,6 +47,7 @@ export const signToken = (payload, type) => {
   const token = jwt.sign(payload, key, {
     expiresIn: expirationDate,
   });
+
   return token;
 };
 

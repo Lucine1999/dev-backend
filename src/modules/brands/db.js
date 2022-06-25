@@ -19,7 +19,6 @@ export const getAllBrandsDB = async (searchKey) => {
 
 export const createBrandDB = async (brandData) => {
   try {
-    console.log(brandData);
     const createdBrand = await brand.create({
       data: brandData,
     });

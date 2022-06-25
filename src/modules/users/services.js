@@ -128,6 +128,7 @@ export const signOutUser = async (req, res, next) => {
 export const verifyUser = async (req, res, next) => {
   try {
     const accessToken = req.cookies["access-token"];
+
     if (!accessToken) {
       res.locals.isAuth = false;
       res.locals.user = {};
@@ -136,6 +137,7 @@ export const verifyUser = async (req, res, next) => {
     }
 
     const accessTokenCheck = validTokenCheck(accessToken, "access");
+
     const id = accessTokenCheck.decode.id;
 
     const user = await getUserByIdDb(id);
@@ -159,7 +161,6 @@ export const verifyUser = async (req, res, next) => {
     res.cookie("access-token", newAccessToken, {
       httpOnly: true,
     });
-
     res.locals.isAuth = true;
     res.locals.user = updatedUser.data;
     return next();

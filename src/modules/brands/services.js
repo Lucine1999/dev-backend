@@ -7,7 +7,6 @@ import {
 import { deleteProducstByBrandDB } from "../products/db.js";
 
 export const createBrand = async (req, res, next) => {
-  console.log(req.body);
   try {
     const brand = req.body;
     const createdBrand = await createBrandDB(brand);
@@ -25,7 +24,11 @@ export const createBrand = async (req, res, next) => {
 export const getBrands = async (req, res, next) => {
   try {
     const brands = await getAllBrandsDB();
-    res.json(brands.data);
+    res.json({
+      brands: brands.data,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
+    });
   } catch (error) {
     console.log(error.message);
     next(error);

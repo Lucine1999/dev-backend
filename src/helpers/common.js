@@ -18,7 +18,10 @@ export const validate = (schema) => {
       schema.body && (await schema.body.validateAsync(body));
       return next();
     } catch (error) {
-      next(badRequestErrorCreator(error.details));
+      return res.send({
+        type: "error",
+        message: "Oops! Something went wrong!",
+      });
     }
   };
 };

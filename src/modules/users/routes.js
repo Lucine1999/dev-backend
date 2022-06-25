@@ -4,10 +4,11 @@ import validations from "./validations.js";
 import {
   getAllUsers,
   getUserById,
-  createUser,
+  signUpUser,
   verifyUser,
   signInUser,
   signOutUser,
+  checkUserAuth,
 } from "./services.js";
 
 const { getUserByIdSchema, createUserSchema, loginUserSchema } = validations;
@@ -15,8 +16,9 @@ const { getUserByIdSchema, createUserSchema, loginUserSchema } = validations;
 const router = Router();
 
 router.get("/", verifyUser, getAllUsers);
+router.get("/auth", verifyUser, checkUserAuth);
 router.get("/:userId", validate(getUserByIdSchema), getUserById);
 router.post("/signIn", validate(loginUserSchema), signInUser);
+router.post("/signUp", validate(createUserSchema), signUpUser);
 router.post("/signOut", signOutUser);
-router.post("/createUser", validate(createUserSchema), createUser);
 export { router as usersRoutes };

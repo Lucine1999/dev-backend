@@ -118,12 +118,14 @@ export const loginUser = async (req, res, next) => {
 export const verifyUser = async (req, res, next) => {
   try {
     const accessToken = req.cookies["access-token"];
+
     if (!accessToken) {
       res.locals.isAuth = false;
       return next();
     }
 
     const accessTokenCheck = validTokenCheck(accessToken, "access");
+
     const id = accessTokenCheck.decode.id;
 
     const user = await getUserByIdDb(id);
@@ -135,6 +137,7 @@ export const verifyUser = async (req, res, next) => {
       );
       if (refreshTokenCheck.error) {
         res.locals.isAuth = false;
+
         return next();
       }
     }
@@ -146,7 +149,6 @@ export const verifyUser = async (req, res, next) => {
     res.cookie("access-token", newAccessToken, {
       httpOnly: true,
     });
-
     res.locals.isAuth = true;
     res.locals.user = updatedUser.data;
     return next();

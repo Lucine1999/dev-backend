@@ -8,12 +8,14 @@ import {
   deleteBrand,
 } from "./services.js";
 
+import { verifyUser } from "../users/services.js";
+
 // const { createProductSchema, getProductByIdSchema } = validations
 
 const router = Router();
 
 router.post("/", createBrand);
-router.get("/getBrands", getBrands);
+router.get("/getBrands", verifyUser, getBrands);
 router.put("/update/:id", updateBrand);
 router.delete("/delete/:id", deleteBrand);
 

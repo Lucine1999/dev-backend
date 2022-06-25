@@ -6,7 +6,8 @@ import {
   getUserById,
   createUser,
   verifyUser,
-  loginUser,
+  signInUser,
+  signOutUser,
 } from "./services.js";
 
 const { getUserByIdSchema, createUserSchema, loginUserSchema } = validations;
@@ -15,6 +16,7 @@ const router = Router();
 
 router.get("/", verifyUser, getAllUsers);
 router.get("/:userId", validate(getUserByIdSchema), getUserById);
-router.post("/signIn", validate(loginUserSchema), loginUser);
+router.post("/signIn", validate(loginUserSchema), signInUser);
+router.post("/signOut", signOutUser);
 router.post("/createUser", validate(createUserSchema), createUser);
 export { router as usersRoutes };

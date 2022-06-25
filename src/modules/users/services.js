@@ -11,6 +11,7 @@ import {
   getUserByIdDb,
   addUserRefreshToken,
   getUserByEmailDb,
+  removeUserRefreshToken,
 } from "./db.js";
 
 export const getAllUsers = async (req, res, next) => {
@@ -52,21 +53,11 @@ export const createUser = async (req, res, next) => {
 
     const user = await createUserDb(userData);
 
-    const userId = user.data.id;
+    const id = user.data.id;
 
-    const accessToken = signToken(
-      {
-        id: userId,
-      },
-      "access",
-    );
-    const refreshToken = signToken(
-      {
-        id: userId,
-      },
-      "refresh",
-    );
-    await addUserRefreshToken(userId, refreshToken);
+    const accessToken = signToken({ id }, "access");
+    const refreshToken = signToken({ id }, "refresh");
+    await addUserRefreshToken(id, refreshToken);
     res.cookie("access-token", accessToken, {
       httpOnly: true,
     });
@@ -76,7 +67,7 @@ export const createUser = async (req, res, next) => {
   }
 };
 
-export const loginUser = async (req, res, next) => {
+export const signInUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await getUserByEmailDb(email);
@@ -90,26 +81,31 @@ export const loginUser = async (req, res, next) => {
       res.status(401).send("Invalid username or password");
     }
 
-    const userId = user.data.id;
-    const accessToken = signToken(
-      {
-        id: userId,
-      },
-      "access",
-    );
-    const refreshToken = signToken(
-      {
-        id: userId,
-      },
-      "refresh",
-    );
+    const id = user.data.id;
+    const accessToken = signToken({ id }, "access");
 
-    await addUserRefreshToken(userId, refreshToken);
+    const refreshToken = signToken({ id }, "refresh");
+
+    await addUserRefreshToken(id, refreshToken);
 
     res.cookie("access-token", accessToken, {
       httpOnly: true,
     });
     return res.json({ data: user.data, isAuth: true });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const signOutUser = async (req, res, next) => {
+  try {
+    const id = req.body.id;
+    await removeUserRefreshToken(id);
+    res.clearCookie("access-token");
+    res.json({
+      result: "ok",
+      message: "You have successfully signed out!",
+    });
   } catch (err) {
     next(err);
   }
@@ -121,6 +117,8 @@ export const verifyUser = async (req, res, next) => {
 
     if (!accessToken) {
       res.locals.isAuth = false;
+      res.locals.user = {};
+      res.clearCookie("access-token");
       return next();
     }
 
@@ -137,7 +135,7 @@ export const verifyUser = async (req, res, next) => {
       );
       if (refreshTokenCheck.error) {
         res.locals.isAuth = false;
-
+        res.locals.user = {};
         return next();
       }
     }

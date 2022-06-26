@@ -1,7 +1,7 @@
-import { badRequestErrorCreator } from "./errors.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import app from "../app.js";
+import { addUserRefreshToken, getUserByIdDb } from "../modules/users/db.js";
 
 const accessKey = app.get("accessKey");
 const refreshKey = app.get("refreshKey");
@@ -24,6 +24,50 @@ export const validate = (schema) => {
       });
     }
   };
+};
+
+export const verifyUser = async (req, res, next) => {
+  try {
+    const accessToken = req.cookies["access-token"];
+
+    if (!accessToken) {
+      res.locals.isAuth = false;
+      res.locals.user = {};
+      res.clearCookie("access-token");
+      return next();
+    }
+
+    const accessTokenCheck = validTokenCheck(accessToken, "access");
+
+    const id = accessTokenCheck.decode.id;
+
+    const user = await getUserByIdDb(id);
+
+    if (accessTokenCheck.error) {
+      const refreshTokenCheck = validTokenCheck(
+        user.data.refreshToken,
+        "refresh",
+      );
+      if (refreshTokenCheck.error) {
+        res.locals.isAuth = false;
+        res.locals.user = {};
+        return next();
+      }
+    }
+
+    const newAccessToken = signToken({ id }, "access");
+    const newRefreshToken = signToken({ id }, "refresh");
+
+    const updatedUser = await addUserRefreshToken(id, newRefreshToken);
+    res.cookie("access-token", newAccessToken, {
+      httpOnly: true,
+    });
+    res.locals.isAuth = true;
+    res.locals.user = updatedUser.data;
+    return next();
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const responseDataCreator = ({ data }) => ({

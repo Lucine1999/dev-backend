@@ -2,13 +2,25 @@ import { prisma } from "../../services/Prisma.js";
 
 const { product } = prisma;
 
-export const getAllProductsDB = async () => {
+export const getProductsDB = async (skip, take) => {
   try {
-    const products = await product.findMany();
+    const products = await product.findMany({
+      skip,
+      take,
+    });
+    return products;
+  } catch (error) {
     return {
-      data: products,
-      error: null,
+      data: null,
+      error: error,
     };
+  }
+};
+
+export const getProductsLengthDb = async () => {
+  try {
+    const length = await product.count();
+    return length;
   } catch (error) {
     return {
       data: null,

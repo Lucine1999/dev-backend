@@ -7,10 +7,7 @@ import {
   updateBrand,
   deleteBrand,
 } from "./services.js";
-
-import { verifyUser } from "../users/services.js";
-
-// const { createProductSchema, getProductByIdSchema } = validations
+import { verifyUser } from "../../helpers/common.js";
 
 const router = Router();
 

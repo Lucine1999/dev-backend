@@ -34,12 +34,12 @@ export const createProductDB = async (productData) => {
     const createdProduct = await product.create({
       data: productData,
     });
+
     return {
       data: createdProduct,
       error: null,
     };
   } catch (error) {
-    console.log(error);
     return {
       data: null,
       error,
@@ -85,6 +85,7 @@ export const deleteProductDB = async (id) => {
     };
   }
 };
+
 export const deleteProducstByCategoryDB = async (id) => {
   try {
     const deletedProducts = await product.deleteMany({
@@ -103,7 +104,7 @@ export const deleteProducstByCategoryDB = async (id) => {
     };
   }
 };
-export const deleteProducstByBrandDB = async (id) => {
+export const deleteProductsByBrandDB = async (id) => {
   try {
     const deletedProducts = await product.deleteMany({
       where: {

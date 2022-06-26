@@ -1,6 +1,6 @@
 import { Router } from "express";
-// import { validate } from '../../helpers/common.js'
-// import validations from './validations.js'
+import { validate } from "../../helpers/common.js";
+import validations from "./validations.js";
 import {
   createBrand,
   getBrands,
@@ -9,11 +9,22 @@ import {
 } from "./services.js";
 import { verifyUser } from "../../helpers/common.js";
 
+const { createBrandSchema, deleteBrandSchema, updateBrandSchema } = validations;
 const router = Router();
 
-router.post("/", createBrand);
-router.get("/getBrands", verifyUser, getBrands);
-router.put("/update/:id", updateBrand);
-router.delete("/delete/:id", deleteBrand);
+router.get("/", verifyUser, getBrands);
+router.post("/brand", verifyUser, validate(createBrandSchema), createBrand);
+router.patch(
+  "/brand/:brandId",
+  verifyUser,
+  validate(updateBrandSchema),
+  updateBrand,
+);
+router.delete(
+  "/brand/:brandId",
+  verifyUser,
+  validate(deleteBrandSchema),
+  deleteBrand,
+);
 
 export { router as brandsRoutes };

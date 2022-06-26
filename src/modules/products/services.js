@@ -17,7 +17,6 @@ export const createProduct = async (req, res, next) => {
       message: "Successfully created a new product!!",
     });
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };
@@ -42,7 +41,6 @@ export const getProducts = async (req, res, next) => {
       user: res.locals.user,
     });
   } catch (e) {
-    console.log(e);
     next(e);
   }
 };
@@ -62,7 +60,6 @@ export const updateProduct = async (req, res, next) => {
     const updatedProduct = await updateProductDB(id, req.body);
     res.json(updatedProduct.data);
   } catch (e) {
-    console.log(e);
     next(e);
   }
 };
@@ -72,19 +69,16 @@ export const deleteProduct = async (req, res, next) => {
     const deletedProduct = await deleteProductDB(id);
     res.json(deletedProduct.data);
   } catch (e) {
-    console.log(e);
     next(e);
   }
 };
 
 export const getProductById = async (req, res, next) => {
   try {
-    console.log(req.params);
     const { productId } = req.params;
     const foundProduct = await getProductByIdDB(productId);
     res.json(foundProduct);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

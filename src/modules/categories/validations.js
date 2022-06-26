@@ -1,15 +1,22 @@
 import Joi from "joi";
 
-// export default {
-//   getProductByIdSchema: {
-//     params: Joi.object({
-//       // productId: Joi.number().integer().required(),
-//     }),
-//   },
-//   createProductSchema: {
-//     body: Joi.object({
-//       name: Joi.string().required(),
-//       price: Joi.number().integer().required(),
-//     }),
-//   },
-// }
+export default {
+  createCategorySchema: {
+    body: Joi.object({
+      name: Joi.string().min(3).max(100).required(),
+    }),
+  },
+  deleteCategorySchema: {
+    params: Joi.object({
+      categoryId: Joi.number().integer().required(),
+    }),
+  },
+  updateCategorySchema: {
+    params: Joi.object({
+      categoryId: Joi.number().integer().required(),
+    }),
+    body: Joi.object({
+      name: Joi.string().min(3).max(100).required(),
+    }),
+  },
+};

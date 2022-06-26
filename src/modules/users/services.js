@@ -77,7 +77,6 @@ export const signInUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await getUserByEmailDb(email);
-    console.log(user);
 
     if (user.error || !user.data) {
       return res.send({

@@ -91,7 +91,7 @@ export const deleteProducstByCategoryDB = async (id) => {
     };
   }
 };
-export const deleteProducstByBrandDB = async (id) => {
+export const deleteProductsByBrandDB = async (id) => {
   try {
     const deletedProducts = await product.deleteMany({
       where: {

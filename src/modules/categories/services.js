@@ -4,51 +4,60 @@ import {
   updateCategoryDB,
   deleteCategoryDB,
 } from "./db.js";
-import { deleteProducstByCategoryDB } from "../products/db.js";
 
 export const getCategories = async (req, res, next) => {
   try {
     const categories = await getAllCategoriesDB();
-    res.json(categories.data);
+    res.json({
+      categories: categories.data,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
+    });
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };
 
 export const createCategory = async (req, res, next) => {
   try {
-    const brand = req.body;
-    const createdCategory = await createCategoryDB(brand);
+    const category = req.body;
+    const createdCategory = await createCategoryDB(category);
 
     res.json({
-      data: createdCategory,
-      message: "Successfully created a new category!!",
+      category: createdCategory,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
     });
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };
 
 export const updateCategory = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const updatedCategory = await updateCategoryDB(id, req.body);
-    res.json(updatedCategory.data);
+    const { categoryId } = req.params;
+    const updatedCategory = await updateCategoryDB(categoryId, req.body);
+
+    res.json({
+      category: updatedCategory.data,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
+    });
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };
 export const deleteCategory = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const deletedProducts = await deleteProducstByCategoryDB(id);
-    const deletedCategory = await deleteCategoryDB(id);
-    res.json({ deletedCategory, deletedProducts });
+    const { categoryId } = req.params;
+    const deletedCategory = await deleteCategoryDB(categoryId);
+
+    res.json({
+      data: deletedCategory.data,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
+    });
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };

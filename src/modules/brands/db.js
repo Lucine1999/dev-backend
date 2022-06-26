@@ -27,7 +27,6 @@ export const createBrandDB = async (brandData) => {
       error: null,
     };
   } catch (error) {
-    console.log(error);
     return {
       data: null,
       error,
@@ -64,7 +63,7 @@ export const deleteBrandDB = async (id) => {
     });
 
     return {
-      data: { deletedBrand },
+      data: deletedBrand,
       error: null,
     };
   } catch (error) {

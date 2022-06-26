@@ -27,7 +27,6 @@ export const createCategoryDB = async (categoryData) => {
       error: null,
     };
   } catch (error) {
-    console.log(error);
     return {
       data: null,
       error,
@@ -64,7 +63,7 @@ export const deleteCategoryDB = async (id) => {
     });
 
     return {
-      data: { deletedCategory },
+      data: deletedCategory,
       error: null,
     };
   } catch (error) {

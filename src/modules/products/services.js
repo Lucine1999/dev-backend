@@ -3,6 +3,7 @@ import {
   getAllProductsDB,
   updateProductDB,
   deleteProductDB,
+  getProductByIdDB,
 } from "./db.js";
 
 export const createProduct = async (req, res, next) => {
@@ -71,5 +72,17 @@ export const deleteProduct = async (req, res, next) => {
   } catch (e) {
     console.log(e);
     next(e);
+  }
+};
+
+export const getProductById = async (req, res, next) => {
+  try {
+    console.log(req.params);
+    const { productId } = req.params;
+    const foundProduct = await getProductByIdDB(productId);
+    res.json(foundProduct);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };

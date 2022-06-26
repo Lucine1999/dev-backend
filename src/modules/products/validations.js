@@ -3,7 +3,7 @@ import Joi from "joi";
 export default {
   getProductByIdSchema: {
     params: Joi.object({
-      // productId: Joi.number().integer().required(),
+      productId: Joi.number().integer().required(),
     }),
   },
   createProductSchema: {

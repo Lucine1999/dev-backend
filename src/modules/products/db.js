@@ -109,3 +109,29 @@ export const deleteProducstByBrandDB = async (id) => {
     };
   }
 };
+
+export const getProductByIdDB = async (id) => {
+  try {
+    const productFound = await product.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return {
+      data: productFound,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error.message,
+    };
+  }
+};

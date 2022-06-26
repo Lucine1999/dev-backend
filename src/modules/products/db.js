@@ -2,9 +2,9 @@ import { prisma } from "../../services/Prisma.js";
 
 const { product } = prisma;
 
-export const getAllProductsDB = async () => {
+export const getAllProductsDB = async (searchKey) => {
   try {
-    const products = await product.findMany();
+    const products = await product.findMany(searchKey);
     return {
       data: products,
       error: null,
@@ -22,6 +22,7 @@ export const createProductDB = async (productData) => {
     const createdProduct = await product.create({
       data: productData,
     });
+
     return {
       data: createdProduct,
       error: null,
@@ -73,6 +74,7 @@ export const deleteProductDB = async (id) => {
     };
   }
 };
+
 export const deleteProducstByCategoryDB = async (id) => {
   try {
     const deletedProducts = await product.deleteMany({
@@ -106,6 +108,32 @@ export const deleteProductsByBrandDB = async (id) => {
     return {
       data: null,
       error: error,
+    };
+  }
+};
+
+export const getProductByIdDB = async (id) => {
+  try {
+    const productFound = await product.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return {
+      data: productFound,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error.message,
     };
   }
 };

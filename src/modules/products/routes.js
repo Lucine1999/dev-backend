@@ -6,12 +6,18 @@ import {
   getProducts,
   updateProduct,
   deleteProduct,
+  getProductById,
 } from "./services.js";
 
 const { createProductSchema, getProductByIdSchema } = validations;
 
 const router = Router();
 router.get("/getProducts", getProducts);
+router.get(
+  "/getProducts/:productId",
+  validate(getProductByIdSchema),
+  getProductById,
+);
 router.post("/", createProduct);
 router.put("/update/:id", updateProduct);
 router.delete("/delete/:id", deleteProduct);

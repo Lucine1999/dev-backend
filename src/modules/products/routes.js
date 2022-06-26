@@ -4,6 +4,7 @@ import validations from "./validations.js";
 import {
   createProduct,
   getProducts,
+  getAllProducts,
   updateProduct,
   deleteProduct,
   getProductById,
@@ -12,6 +13,8 @@ import {
 const { createProductSchema, getProductByIdSchema } = validations;
 
 const router = Router();
+router.get("/", getAllProducts)
+
 router.get("/getProducts", getProducts);
 router.get(
   "/getProducts/:productId",

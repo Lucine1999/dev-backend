@@ -3,11 +3,12 @@ import { prisma } from "../../services/Prisma.js";
 const { wishlist } = prisma;
 
 export const createWishlistDB = async (wishlistData) => {
-  console.log(wishlistData);
+  console.log(wishlistData, "***************");
   try {
     const createdWishlist = await wishlist.create({
       data: wishlistData,
     });
+
     return {
       data: createdWishlist,
       error: null,
@@ -24,10 +25,9 @@ export const getWishlistDB = async (searchKey) => {
   try {
     const list = await wishlist.findMany({
       where: {
-        userId: searchKey,
+        userId: Number(searchKey),
       },
     });
-    console.log(list, "wishtlist");
     return {
       data: list,
       error: null,
@@ -40,21 +40,22 @@ export const getWishlistDB = async (searchKey) => {
   }
 };
 
-export const deleteWishlistItemIdDB = async (searchKey) => {
+export const deleteWishlistItemIdDB = async ({ id, userId }) => {
   try {
-    const deletedItem = await wishlist.delete({
+    const deletedItem = await wishlist.deleteMany({
       where: {
-        id: Number(searchKey),
+        productId: Number(id),
+        userId: Number(userId),
       },
-    })
+    });
     return {
       data: deletedItem,
       error: null,
-    }
+    };
   } catch (error) {
     return {
       data: null,
       error: error,
-    }
+    };
   }
-}
+};

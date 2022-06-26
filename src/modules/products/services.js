@@ -20,7 +20,10 @@ export const createProduct = async (req, res, next) => {
     next(error);
   }
 };
-
+export const getAllProducts = async (req, res, next) => {
+  const products = await getAllProductsDB();
+  res.json(products.data);
+};
 export const getProducts = async (req, res, next) => {
   const products = await getAllProductsDB();
   const page = parseInt(req.query.page);

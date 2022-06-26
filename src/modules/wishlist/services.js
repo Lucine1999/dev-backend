@@ -1,8 +1,12 @@
-import { getWishlistDB, createWishlistDB, deleteWishlistItemIdDB } from "./db.js";
+import {
+  getWishlistDB,
+  createWishlistDB,
+  deleteWishlistItemIdDB,
+} from "./db.js";
 
 export const getWishlist = async (req, res, next) => {
   try {
-    const wishlist = await getWishlistDB(req.body.userId);
+    const wishlist = await getWishlistDB(req.params.userId);
     res.json(wishlist.data);
   } catch (err) {
     console.log(err);
@@ -10,11 +14,11 @@ export const getWishlist = async (req, res, next) => {
   }
 };
 
-
 export const createWishlistItem = async (req, res, next) => {
   try {
-    const reqBody = req.body;
-    const createdWishlist = await createWishlistDB(reqBody);
+    const userId = Number(req.body.userId);
+    const productId = Number(req.params.id);
+    const createdWishlist = await createWishlistDB({ productId, userId });
 
     res.json({
       data: createdWishlist,
@@ -26,11 +30,11 @@ export const createWishlistItem = async (req, res, next) => {
   }
 };
 
-
 export const deleteWishlistItem = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedItem = await deleteWishlistItemIdDB(id);
+    const { userId } = req.body;
+    const deletedItem = await deleteWishlistItemIdDB({ id, userId });
     res.json(deletedItem.data);
   } catch (e) {
     console.log(e);

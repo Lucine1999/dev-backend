@@ -19,7 +19,8 @@ router.get(
   validate(getProductByIdSchema),
   getProductById,
 );
-router.post("/", createProduct);
+// router.post("/", createProduct);
+
 router.get("/count", getProductsCount);
 router.put("/update/:id", updateProduct);
 router.delete("/delete/:id", deleteProduct);

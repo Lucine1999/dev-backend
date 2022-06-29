@@ -6,7 +6,7 @@ import {
 
 export const getWishlist = async (req, res, next) => {
   try {
-    const wishlist = await getWishlistDB(req.body.userId);
+    const wishlist = await getWishlistDB(req.params.userId);
     res.json(wishlist.data);
   } catch (err) {
     next(err);
@@ -15,13 +15,11 @@ export const getWishlist = async (req, res, next) => {
 
 export const createWishlistItem = async (req, res, next) => {
   try {
-    const reqBody = req.body;
-    const createdWishlist = await createWishlistDB(reqBody);
+    const userId = Number(req.body.userId);
+    const productId = Number(req.params.id);
+    const createdWishlist = await createWishlistDB({ productId, userId });
 
-    res.json({
-      data: createdWishlist,
-      message: "Successfully created a new wishlist!!",
-    });
+    res.json(createdWishlist.data);
   } catch (error) {
     next(error);
   }
@@ -30,7 +28,9 @@ export const createWishlistItem = async (req, res, next) => {
 export const deleteWishlistItem = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedItem = await deleteWishlistItemIdDB(id);
+    const { userId } = req.body;
+    const deletedItem = await deleteWishlistItemIdDB({ id, userId });
+    console.log(deletedItem, "deletedItem");
     res.json(deletedItem.data);
   } catch (e) {
     next(e);

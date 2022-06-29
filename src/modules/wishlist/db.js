@@ -49,7 +49,7 @@ export const deleteWishlistItemIdDB = async ({ id, userId }) => {
       },
     });
     return {
-      data: deletedItem,
+      data: id,
       error: null,
     };
   } catch (error) {

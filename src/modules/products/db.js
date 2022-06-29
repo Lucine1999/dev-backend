@@ -2,13 +2,29 @@ import { prisma } from "../../services/Prisma.js";
 
 const { product } = prisma;
 
-export const getAllProductsDB = async (searchKey) => {
+export const getProductsDB = async (skip, take) => {
   try {
-    const products = await product.findMany(searchKey);
+    const products = await product.findMany({
+      skip,
+      take,
+      include: {
+        category: true,
+        brand: true,
+      },
+    });
+    return products;
+  } catch (error) {
     return {
-      data: products,
-      error: null,
+      data: null,
+      error: error,
     };
+  }
+};
+
+export const getProductsLengthDb = async () => {
+  try {
+    const length = await product.count();
+    return length;
   } catch (error) {
     return {
       data: null,
@@ -28,7 +44,6 @@ export const createProductDB = async (productData) => {
       error: null,
     };
   } catch (error) {
-    console.log(error);
     return {
       data: null,
       error,
@@ -93,7 +108,7 @@ export const deleteProducstByCategoryDB = async (id) => {
     };
   }
 };
-export const deleteProducstByBrandDB = async (id) => {
+export const deleteProductsByBrandDB = async (id) => {
   try {
     const deletedProducts = await product.deleteMany({
       where: {

@@ -2,7 +2,6 @@ import {
   responseDataCreator,
   hashPassword,
   signToken,
-  validTokenCheck,
   comparePassword,
 } from "../../helpers/common.js";
 import {
@@ -78,7 +77,6 @@ export const signInUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await getUserByEmailDb(email);
-    console.log(user);
 
     if (user.error || !user.data) {
       return res.send({
@@ -120,50 +118,6 @@ export const signOutUser = async (req, res, next) => {
       result: "ok",
       message: "You have successfully signed out!",
     });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const verifyUser = async (req, res, next) => {
-  try {
-    const accessToken = req.cookies["access-token"];
-
-    if (!accessToken) {
-      res.locals.isAuth = false;
-      res.locals.user = {};
-      res.clearCookie("access-token");
-      return next();
-    }
-
-    const accessTokenCheck = validTokenCheck(accessToken, "access");
-
-    const id = accessTokenCheck.decode.id;
-
-    const user = await getUserByIdDb(id);
-
-    if (accessTokenCheck.error) {
-      const refreshTokenCheck = validTokenCheck(
-        user.data.refreshToken,
-        "refresh",
-      );
-      if (refreshTokenCheck.error) {
-        res.locals.isAuth = false;
-        res.locals.user = {};
-        return next();
-      }
-    }
-
-    const newAccessToken = signToken({ id }, "access");
-    const newRefreshToken = signToken({ id }, "refresh");
-
-    const updatedUser = await addUserRefreshToken(id, newRefreshToken);
-    res.cookie("access-token", newAccessToken, {
-      httpOnly: true,
-    });
-    res.locals.isAuth = true;
-    res.locals.user = updatedUser.data;
-    return next();
   } catch (err) {
     next(err);
   }

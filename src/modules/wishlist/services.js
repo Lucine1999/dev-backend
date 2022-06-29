@@ -9,7 +9,6 @@ export const getWishlist = async (req, res, next) => {
     const wishlist = await getWishlistDB(req.params.userId);
     res.json(wishlist.data);
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
@@ -22,7 +21,6 @@ export const createWishlistItem = async (req, res, next) => {
 
     res.json(createdWishlist.data);
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };
@@ -35,7 +33,6 @@ export const deleteWishlistItem = async (req, res, next) => {
     console.log(deletedItem, "deletedItem");
     res.json(deletedItem.data);
   } catch (e) {
-    console.log(e);
     next(e);
   }
 };

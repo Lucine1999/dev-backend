@@ -3,7 +3,6 @@ import { prisma } from "../../services/Prisma.js";
 const { wishlist } = prisma;
 
 export const createWishlistDB = async (wishlistData) => {
-  console.log(wishlistData, "***************");
   try {
     const createdWishlist = await wishlist.create({
       data: wishlistData,
@@ -14,7 +13,6 @@ export const createWishlistDB = async (wishlistData) => {
       error: null,
     };
   } catch (error) {
-    console.log(error);
     return {
       data: null,
       error,

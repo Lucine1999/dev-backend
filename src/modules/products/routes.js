@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validate } from "../../helpers/common.js";
+import { validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
 import {
   createProduct,
@@ -8,20 +8,23 @@ import {
   updateProduct,
   deleteProduct,
   getProductById,
+  getProductsCount,
 } from "./services.js";
 
 const { createProductSchema, getProductByIdSchema } = validations;
 
 const router = Router();
-router.get("/", getAllProducts)
 
-router.get("/getProducts", getProducts);
+router.get("/getProducts", verifyUser, getProducts);
+
 router.get(
   "/getProducts/:productId",
   validate(getProductByIdSchema),
   getProductById,
 );
-router.post("/", createProduct);
+// router.post("/", createProduct);
+
+router.get("/count", getProductsCount);
 router.put("/update/:id", updateProduct);
 router.delete("/delete/:id", deleteProduct);
 

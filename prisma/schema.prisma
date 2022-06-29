@@ -24,19 +24,19 @@ model Category {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(500)
-  price       Float    @db.Float
-  discount    Int      @default(0) @db.Int
-  description String?  @db.Text
-  brand       Brand    @relation(fields: [brandId], references: [id])
-  brandId     Int      @db.Int
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int      @db.Int
-  productImg  String   @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
-  Wishlist Wishlist[]
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(500)
+  price       Float      @db.Float
+  discount    Int        @default(0) @db.Int
+  description String?    @db.Text
+  brand       Brand      @relation(fields: [brandId], references: [id])
+  brandId     Int        @db.Int
+  category    Category   @relation(fields: [categoryId], references: [id])
+  categoryId  Int        @db.Int
+  productImg  String     @db.Text
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+  Wishlist    Wishlist[]
 }
 
 model User {
@@ -63,11 +63,6 @@ model Wishlist {
   userId    Int      @db.Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-
-}
-
-model Wishlist {
-  id Int @id @default(autoincrement())
 
 }
 

@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { validate } from "../../helpers/common.js";
+import { validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
 import {
   getAllUsers,
   getUserById,
   signUpUser,
-  verifyUser,
   signInUser,
   signOutUser,
   checkUserAuth,

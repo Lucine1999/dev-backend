@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { validate, verifyUser } from "../../helpers/common.js";
+import {
+  validate,
+  verifyUser,
+  adminUserCheck,
+  mainAdminUserCheck,
+} from "../../helpers/common.js";
 import validations from "./validations.js";
 import {
   getAllUsers,
@@ -14,7 +19,7 @@ const { getUserByIdSchema, createUserSchema, loginUserSchema } = validations;
 
 const router = Router();
 
-router.get("/", verifyUser, getAllUsers);
+router.get("/", verifyUser, mainAdminUserCheck, getAllUsers);
 router.get("/auth", verifyUser, checkUserAuth);
 router.get("/:userId", validate(getUserByIdSchema), getUserById);
 router.post("/signIn", validate(loginUserSchema), signInUser);

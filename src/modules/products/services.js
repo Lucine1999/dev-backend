@@ -10,20 +10,21 @@ import {
 export const createProduct = async (req, res, next) => {
   try {
     const product = req.body;
-
     const createdProduct = await createProductDB(product);
+
     res.json({
-      data: createdProduct,
-      message: "Successfully created a new product!!",
+      product: createdProduct,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
     });
   } catch (error) {
     next(error);
   }
 };
-export const getAllProducts = async (req, res, next) => {
-  const products = await getAllProductsDB();
-  res.json(products.data);
-};
+// export const getAllProducts = async (req, res, next) => {
+//   const products = await getAllProductsDB();
+//   res.json(products.data);
+// };
 export const getProducts = async (req, res, next) => {
   try {
     const skip = parseInt(req.query.skip);
@@ -32,16 +33,11 @@ export const getProducts = async (req, res, next) => {
     const products = await getProductsDB(skip, take);
 
     if (products.error) {
-      return res.send({
-        type: "error",
-        message: "Oops! Something went wrong.",
-      });
+      res.status(400).send("Bad Request");
     }
 
     return res.json({
       products,
-      isAuth: res.locals.isAuth,
-      user: res.locals.user,
     });
   } catch (e) {
     next(e);

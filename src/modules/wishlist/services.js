@@ -5,8 +5,8 @@ import {
 } from "./db.js";
 
 export const getWishlist = async (req, res, next) => {
-  console.log(res.locals.isAuth);
-  const userId = Number(res.locals.user.data.id);
+  console.log(res.locals.user.data.id, "USER");
+  const userId = res.locals.user.data.id;
   try {
     const wishlist = await getWishlistDB(userId);
     res.json(wishlist.data);
@@ -17,7 +17,7 @@ export const getWishlist = async (req, res, next) => {
 
 export const createWishlistItem = async (req, res, next) => {
   try {
-    const userId = Number(res.locals.user.data.id);
+    const userId = res.locals.user.data.id;
     const productId = Number(req.params.id);
     const createdWishlist = await createWishlistDB({ productId, userId });
 
@@ -30,9 +30,8 @@ export const createWishlistItem = async (req, res, next) => {
 export const deleteWishlistItem = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userId = Number(res.locals.user.data.id);
+    const userId = res.locals.user.data.id;
     const deletedItem = await deleteWishlistItemIdDB({ id, userId });
-    console.log(deletedItem, "deletedItem");
     res.json(deletedItem.data);
   } catch (e) {
     next(e);

@@ -25,6 +25,9 @@ export const getWishlistDB = async (searchKey) => {
       where: {
         userId: Number(searchKey),
       },
+      include:{
+        Product:true
+      }
     });
     return {
       data: list,

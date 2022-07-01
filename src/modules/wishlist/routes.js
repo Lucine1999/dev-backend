@@ -4,6 +4,7 @@ import {
   getWishlist,
   deleteWishlistItem,
 } from "./services.js";
+import { verifyUser } from "../../helpers/common.js";
 
 // import { validate } from '../../helpers/common.js'
 // import validations from './validations.js'
@@ -11,8 +12,8 @@ import {
 
 const router = Router();
 
-router.post("/create/:id", createWishlistItem);
-router.get("/getWishlist/:userId", getWishlist);
-router.delete("/delete/:id", deleteWishlistItem);
+router.post("/create/:id", verifyUser, createWishlistItem);
+router.get("/getWishlist", verifyUser, getWishlist);
+router.delete("/delete/:id", verifyUser, deleteWishlistItem);
 
 export { router as wishlistRoutes };

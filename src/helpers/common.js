@@ -38,6 +38,13 @@ export const verifyUser = async (req, res, next) => {
 
     const accessTokenCheck = validTokenCheck(accessToken, "access");
 
+    // console.log(accessTokenCheck);
+    if (accessTokenCheck.error) {
+      res.send({
+        isAuth: false,
+      });
+    }
+
     const id = accessTokenCheck.decode.id;
 
     const user = await getUserByIdDb(id);

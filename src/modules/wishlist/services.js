@@ -5,7 +5,8 @@ import {
 } from "./db.js";
 
 export const getWishlist = async (req, res, next) => {
-  console.log(res.locals.user.data.id, "USER");
+  // console.log(res.locals.user.data.id, "USER");
+  console.log(res.locals.user);
   const userId = res.locals.user.data.id;
   try {
     const wishlist = await getWishlistDB(userId);

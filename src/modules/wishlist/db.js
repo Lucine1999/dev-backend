@@ -7,6 +7,7 @@ export const createWishlistDB = async (wishlistData) => {
     const createdWishlist = await wishlist.create({
       data: wishlistData,
     });
+
     return {
       data: createdWishlist,
       error: null,
@@ -22,7 +23,10 @@ export const getWishlistDB = async (searchKey) => {
   try {
     const list = await wishlist.findMany({
       where: {
-        userId: searchKey,
+        userId: Number(searchKey),
+      },
+      include: {
+        Product: true,
       },
     });
     return {
@@ -37,15 +41,16 @@ export const getWishlistDB = async (searchKey) => {
   }
 };
 
-export const deleteWishlistItemIdDB = async (searchKey) => {
+export const deleteWishlistItemIdDB = async ({ id, userId }) => {
   try {
-    const deletedItem = await wishlist.delete({
+    const deletedItem = await wishlist.deleteMany({
       where: {
-        id: Number(searchKey),
+        productId: Number(id),
+        userId: Number(userId),
       },
     });
     return {
-      data: deletedItem,
+      data: id,
       error: null,
     };
   } catch (error) {

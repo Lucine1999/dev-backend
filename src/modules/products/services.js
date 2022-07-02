@@ -12,11 +12,12 @@ import {
 export const createProduct = async (req, res, next) => {
   try {
     const product = req.body;
-
     const createdProduct = await createProductDB(product);
+
     res.json({
-      data: createdProduct,
-      message: "Successfully created a new product!!",
+      product: createdProduct,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
     });
   } catch (error) {
     next(error);

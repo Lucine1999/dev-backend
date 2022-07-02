@@ -15,7 +15,7 @@ const { createCategorySchema, deleteCategorySchema, updateCategorySchema } =
 
 const router = Router();
 
-router.get("/", verifyUser, getCategories);
+router.get("/", getCategories);
 router.post(
   "/category",
   verifyUser,

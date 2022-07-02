@@ -9,8 +9,7 @@ export const getBrands = async (req, res, next) => {
   try {
     const brands = await getAllBrandsDB();
     res.json({
-      brands: brands.data,
-      isAuth: res.locals.isAuth,
+      data: brands.data,
       user: res.locals.user,
     });
   } catch (error) {
@@ -25,7 +24,6 @@ export const createBrand = async (req, res, next) => {
 
     res.json({
       brand: createdBrand,
-      isAuth: res.locals.isAuth,
       user: res.locals.user,
     });
   } catch (error) {
@@ -40,7 +38,6 @@ export const updateBrand = async (req, res, next) => {
 
     res.json({
       brand: updatedBrand.data,
-      isAuth: res.locals.isAuth,
       user: res.locals.user,
     });
   } catch (error) {
@@ -54,7 +51,6 @@ export const deleteBrand = async (req, res, next) => {
 
     res.json({
       data: deletedBrand.data,
-      isAuth: res.locals.isAuth,
       user: res.locals.user,
     });
   } catch (error) {

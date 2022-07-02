@@ -14,14 +14,14 @@ import {
 } from "./db.js";
 
 export const checkUserAuth = (req, res) => {
-  res.json({ isAuth: res.locals.isAuth, user: res.locals.user });
+  res.json({ user: res.locals.user });
 };
 
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await getAllUsersDb();
     const userData = responseDataCreator(users);
-    res.json({ ...userData, isAuth: res.locals.isAuth, user: res.locals.user });
+    res.json({ ...userData, user: res.locals.user });
   } catch (error) {
     next(error);
   }
@@ -67,7 +67,7 @@ export const signUpUser = async (req, res, next) => {
     res.cookie("access-token", accessToken, {
       httpOnly: true,
     });
-    res.json({ user: user.data, isAuth: true });
+    res.json({ user: user.data });
   } catch (err) {
     next(err);
   }
@@ -77,6 +77,9 @@ export const signInUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await getUserByEmailDb(email);
+
+    console.log("email - ", email);
+    console.log("password - ", password);
 
     if (user.error || !user.data) {
       return res.send({
@@ -103,7 +106,7 @@ export const signInUser = async (req, res, next) => {
     res.cookie("access-token", accessToken, {
       httpOnly: true,
     });
-    return res.json({ user: user.data, isAuth: true });
+    return res.json({ user: user.data });
   } catch (err) {
     next(err);
   }

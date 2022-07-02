@@ -2,13 +2,10 @@ import { prisma } from "../../services/Prisma.js";
 
 const { product } = prisma;
 
-export const getProductsDB = async (skip, take) => {
+export const getAllProductsCountDB = async () => {
   try {
-    const products = await product.findMany({
-      skip,
-      take,
-    });
-    return products;
+    const length = await product.count();
+    return length;
   } catch (error) {
     return {
       data: null,
@@ -17,14 +14,89 @@ export const getProductsDB = async (skip, take) => {
   }
 };
 
-export const getProductsLengthDb = async () => {
+export const getProductsDB = async (page, brands, categories, min, max) => {
   try {
-    const length = await product.count();
-    return length;
+    const products = await product.findMany({
+      where: {
+        ...{
+          ...(brands.length && {
+            brandId: {
+              in: brands,
+            },
+          }),
+          ...(categories.length && {
+            categoryId: {
+              in: categories,
+            },
+          }),
+          price: {
+            ...(Number.isInteger(min) && {
+              gte: min,
+            }),
+            ...(Number.isInteger(max) && {
+              lte: max,
+            }),
+          },
+        },
+      },
+      skip: (page - 1) * 9,
+      take: 9,
+    });
+
+    return products;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getFilteredProductsCountDB = async (
+  page,
+  brands,
+  categories,
+  min,
+  max,
+) => {
+  const productsCount = await product.count({
+    where: {
+      ...{
+        ...(brands.length && {
+          brandId: {
+            in: brands,
+          },
+        }),
+        ...(categories.length && {
+          categoryId: {
+            in: categories,
+          },
+        }),
+        price: {
+          ...(Number.isInteger(min) && {
+            gte: min,
+          }),
+          ...(Number.isInteger(max) && {
+            lte: max,
+          }),
+        },
+      },
+    },
+  });
+
+  return productsCount;
+};
+
+export const getHighestPriceDB = async () => {
+  try {
+    const price = await product.aggregate({
+      _max: {
+        price: true,
+      },
+    });
+
+    return price._max;
   } catch (error) {
     return {
       data: null,
-      error: error,
+      error,
     };
   }
 };
@@ -46,6 +118,7 @@ export const createProductDB = async (productData) => {
     };
   }
 };
+
 export const updateProductDB = async (id, data) => {
   try {
     const updatedProduct = await product.update({
@@ -67,6 +140,7 @@ export const updateProductDB = async (id, data) => {
     };
   }
 };
+
 export const deleteProductDB = async (id) => {
   try {
     const deletedProduct = await product.delete({
@@ -104,6 +178,7 @@ export const deleteProducstByCategoryDB = async (id) => {
     };
   }
 };
+
 export const deleteProductsByBrandDB = async (id) => {
   try {
     const deletedProducts = await product.deleteMany({

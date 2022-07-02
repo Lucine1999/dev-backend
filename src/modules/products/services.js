@@ -4,7 +4,9 @@ import {
   updateProductDB,
   deleteProductDB,
   getProductByIdDB,
-  getProductsLengthDb,
+  getAllProductsCountDB,
+  getFilteredProductsCountDB,
+  getHighestPriceDB,
 } from "./db.js";
 
 export const createProduct = async (req, res, next) => {
@@ -21,34 +23,61 @@ export const createProduct = async (req, res, next) => {
   }
 };
 
-export const getProducts = async (req, res, next) => {
+export const getAllProductsCount = async (req, res, next) => {
   try {
-    const skip = parseInt(req.query.skip);
-    const take = parseInt(req.query.take);
-
-    const products = await getProductsDB(skip, take);
-
-    if (products.error) {
-      return res.send({
-        type: "error",
-        message: "Oops! Something went wrong.",
-      });
-    }
-
-    return res.json({
-      products,
-      isAuth: res.locals.isAuth,
-      user: res.locals.user,
-    });
+    const productsLength = await getAllProductsCountDB();
+    return res.send({ productsLength });
   } catch (e) {
     next(e);
   }
 };
 
-export const getProductsCount = async (req, res, next) => {
+export const getShopProducts = async (req, res, next) => {
   try {
-    const productsLength = await getProductsLengthDb();
-    return res.send({ productsLength });
+    const page = +req.query.page;
+    const brand = req.query.brand;
+    const category = req.query.category;
+    const min = +req.query.min;
+    const max = +req.query.max;
+
+    const brandNumbers = [];
+    const categoryNumbers = [];
+
+    if (Array.isArray(brand)) {
+      brand.forEach((num) => brandNumbers.push(+num));
+    } else if (brand) {
+      brandNumbers.push(+brand);
+    }
+    if (Array.isArray(category)) {
+      category.forEach((num) => categoryNumbers.push(+num));
+    } else if (category) {
+      categoryNumbers.push(+category);
+    }
+    const result = await getProductsDB(
+      page,
+      brandNumbers,
+      categoryNumbers,
+      min,
+      max,
+    );
+    const resultCount = await getFilteredProductsCountDB(
+      page,
+      brandNumbers,
+      categoryNumbers,
+      min,
+      max,
+    );
+    console.log("count - ", resultCount);
+    return res.json({ data: result, dataCount: resultCount });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getHighestPrice = async (req, res, next) => {
+  try {
+    const highestPrice = await getHighestPriceDB();
+    res.json({ data: highestPrice });
   } catch (e) {
     next(e);
   }

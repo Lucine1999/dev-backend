@@ -31,8 +31,7 @@ export const verifyUser = async (req, res, next) => {
     const accessToken = req.cookies["access-token"];
 
     if (!accessToken) {
-      res.locals.isAuth = false;
-      res.locals.user = {};
+      res.locals.user = null;
       res.clearCookie("access-token");
       return next();
     }
@@ -49,8 +48,7 @@ export const verifyUser = async (req, res, next) => {
         "refresh",
       );
       if (refreshTokenCheck.error) {
-        res.locals.isAuth = false;
-        res.locals.user = {};
+        res.locals.user = null;
         return next();
       }
     }
@@ -62,7 +60,7 @@ export const verifyUser = async (req, res, next) => {
     res.cookie("access-token", newAccessToken, {
       httpOnly: true,
     });
-    res.locals.isAuth = true;
+
     res.locals.user = updatedUser.data;
     return next();
   } catch (err) {

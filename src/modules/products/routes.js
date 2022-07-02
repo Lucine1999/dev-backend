@@ -3,24 +3,26 @@ import { validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
 import {
   createProduct,
-  getProducts,
+  getShopProducts,
   updateProduct,
   deleteProduct,
   getProductById,
-  getProductsCount,
+  getAllProductsCount,
+  getHighestPrice,
 } from "./services.js";
 
 const { createProductSchema, getProductByIdSchema } = validations;
 
 const router = Router();
-router.get("/getProducts", verifyUser, getProducts);
+router.get("/getShopProducts", verifyUser, getShopProducts);
 router.get(
   "/getProducts/:productId",
   validate(getProductByIdSchema),
   getProductById,
 );
+router.get("/getHighestPrice", getHighestPrice);
 router.post("/", createProduct);
-router.get("/count", getProductsCount);
+router.get("/count", getAllProductsCount);
 router.put("/update/:id", updateProduct);
 router.delete("/delete/:id", deleteProduct);
 

@@ -10,8 +10,6 @@ export const getCategories = async (req, res, next) => {
     const categories = await getAllCategoriesDB();
     res.json({
       categories: categories.data,
-      isAuth: res.locals.isAuth,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);
@@ -25,7 +23,6 @@ export const createCategory = async (req, res, next) => {
 
     res.json({
       category: createdCategory,
-      isAuth: res.locals.isAuth,
       user: res.locals.user,
     });
   } catch (error) {
@@ -40,7 +37,6 @@ export const updateCategory = async (req, res, next) => {
 
     res.json({
       category: updatedCategory.data,
-      isAuth: res.locals.isAuth,
       user: res.locals.user,
     });
   } catch (error) {
@@ -54,7 +50,6 @@ export const deleteCategory = async (req, res, next) => {
 
     res.json({
       data: deletedCategory.data,
-      isAuth: res.locals.isAuth,
       user: res.locals.user,
     });
   } catch (error) {

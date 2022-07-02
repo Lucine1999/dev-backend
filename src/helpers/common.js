@@ -38,11 +38,10 @@ export const verifyUser = async (req, res, next) => {
 
     const accessTokenCheck = validTokenCheck(accessToken, "access");
 
-    // console.log(accessTokenCheck);
     if (accessTokenCheck.error) {
-      res.send({
-        isAuth: false,
-      });
+      res.clearCookie("access-token");
+
+      res.status(401).send({ error: "Unauthorized", isAuth: false });
     }
 
     const id = accessTokenCheck.decode.id;
@@ -55,6 +54,8 @@ export const verifyUser = async (req, res, next) => {
         "refresh",
       );
       if (refreshTokenCheck.error) {
+        res.clearCookie("access-token");
+
         res.status(401).send({ error: "Unauthorized", isAuth: false });
       }
     }
@@ -75,7 +76,9 @@ export const adminUserCheck = (req, res, next) => {
     if (userData.data.role === "ADMIN" || userData.data.role === "MAIN_ADMIN") {
       next();
     } else {
-      res.status(403).send("Forbidden");
+      res.clearCookie("access-token");
+
+      res.status(403).send({ error: "Forbidden", isAuth: false });
     }
   }
 };
@@ -86,7 +89,9 @@ export const mainAdminUserCheck = (req, res, next) => {
     if (userData.data.role === "MAIN_ADMIN") {
       next();
     } else {
-      res.status(403).send("Forbidden");
+      res.clearCookie("access-token");
+
+      res.status(403).send({ error: "Forbidden", isAuth: false });
     }
   }
 };

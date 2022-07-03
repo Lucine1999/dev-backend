@@ -26,7 +26,6 @@ router.get("/count", getAllProductsCount);
 router.post(
   "/product",
   verifyUser,
-
   validate(createProductSchema),
   createProduct,
 );

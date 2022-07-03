@@ -31,7 +31,7 @@ export const verifyUser = async (req, res, next) => {
     if (!accessToken) {
       res.clearCookie("access-token");
 
-      res.send({
+      return res.send({
         isAuth: false,
       });
     }
@@ -41,7 +41,7 @@ export const verifyUser = async (req, res, next) => {
     if (accessTokenCheck.error) {
       res.clearCookie("access-token");
 
-      res.status(401).send({ error: "Unauthorized", isAuth: false });
+      return res.status(401).send({ error: "Unauthorized", isAuth: false });
     }
 
     const id = accessTokenCheck.decode.id;
@@ -56,7 +56,7 @@ export const verifyUser = async (req, res, next) => {
       if (refreshTokenCheck.error) {
         res.clearCookie("access-token");
 
-        res.status(401).send({ error: "Unauthorized", isAuth: false });
+        return res.status(401).send({ error: "Unauthorized", isAuth: false });
       }
     }
 
@@ -78,7 +78,7 @@ export const adminUserCheck = (req, res, next) => {
     } else {
       res.clearCookie("access-token");
 
-      res.status(403).send({ error: "Forbidden", isAuth: false });
+      return res.status(403).send({ error: "Forbidden", isAuth: false });
     }
   }
 };
@@ -91,7 +91,7 @@ export const mainAdminUserCheck = (req, res, next) => {
     } else {
       res.clearCookie("access-token");
 
-      res.status(403).send({ error: "Forbidden", isAuth: false });
+      return res.status(403).send({ error: "Forbidden", isAuth: false });
     }
   }
 };

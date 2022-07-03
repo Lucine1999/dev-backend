@@ -15,7 +15,7 @@ import {
 
 export const checkUserAuth = (req, res, next) => {
   // console.log(res.locals.user);
-  res.status(200).send({
+  res.send({
     message: "Success",
     isAuth: res.locals.isAuth,
     role: res.locals.user.data.role,

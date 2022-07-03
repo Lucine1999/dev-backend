@@ -20,6 +20,7 @@ export const getBrands = async (req, res, next) => {
 export const createBrand = async (req, res, next) => {
   try {
     const brand = req.body;
+
     const createdBrand = await createBrandDB(brand);
 
     res.json({

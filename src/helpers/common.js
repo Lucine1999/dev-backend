@@ -19,7 +19,7 @@ export const validate = (schema) => {
       schema.body && (await schema.body.validateAsync(body));
       return next();
     } catch (error) {
-      next(badRequestErrorCreator(error.details));
+      return next(badRequestErrorCreator(error.details));
     }
   };
 };
@@ -64,7 +64,7 @@ export const verifyUser = async (req, res, next) => {
 
     res.locals.isAuth = true;
     res.locals.user = user;
-    next();
+    return next();
   } catch (err) {
     next(err);
   }
@@ -74,7 +74,7 @@ export const adminUserCheck = (req, res, next) => {
   if (res.locals.isAuth) {
     const userData = res.locals.user;
     if (userData.data.role === "ADMIN" || userData.data.role === "MAIN_ADMIN") {
-      next();
+      return next();
     } else {
       res.clearCookie("access-token");
 
@@ -87,7 +87,7 @@ export const mainAdminUserCheck = (req, res, next) => {
     const userData = res.locals.user;
 
     if (userData.data.role === "MAIN_ADMIN") {
-      next();
+      return next();
     } else {
       res.clearCookie("access-token");
 

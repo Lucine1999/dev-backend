@@ -14,7 +14,14 @@ export const getAllProductsCountDB = async () => {
   }
 };
 
-export const getProductsDB = async (page, brands, categories, min, max) => {
+export const getProductsDB = async (
+  page,
+  brands,
+  categories,
+  min,
+  max,
+  keyword,
+) => {
   try {
     const products = await product.findMany({
       where: {
@@ -37,6 +44,11 @@ export const getProductsDB = async (page, brands, categories, min, max) => {
               lte: max,
             }),
           },
+          name: {
+            ...(keyword && {
+              contains: keyword,
+            }),
+          },
         },
       },
       skip: (page - 1) * 9,
@@ -50,11 +62,11 @@ export const getProductsDB = async (page, brands, categories, min, max) => {
 };
 
 export const getFilteredProductsCountDB = async (
-  page,
   brands,
   categories,
   min,
   max,
+  keyword,
 ) => {
   const productsCount = await product.count({
     where: {
@@ -77,10 +89,14 @@ export const getFilteredProductsCountDB = async (
             lte: max,
           }),
         },
+        name: {
+          ...(keyword && {
+            contains: keyword,
+          }),
+        },
       },
     },
   });
-
   return productsCount;
 };
 

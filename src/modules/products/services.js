@@ -35,11 +35,12 @@ export const getAllProductsCount = async (req, res, next) => {
 
 export const getShopProducts = async (req, res, next) => {
   try {
-    const page = +req.query.page;
+    const page = +req.query.page || 1;
     const brand = req.query.brand;
     const category = req.query.category;
     const min = +req.query.min;
     const max = +req.query.max;
+    const keyword = req.query.keyword;
 
     const brandNumbers = [];
     const categoryNumbers = [];
@@ -54,21 +55,23 @@ export const getShopProducts = async (req, res, next) => {
     } else if (category) {
       categoryNumbers.push(+category);
     }
+
     const result = await getProductsDB(
       page,
       brandNumbers,
       categoryNumbers,
       min,
       max,
+      keyword,
     );
     const resultCount = await getFilteredProductsCountDB(
-      page,
       brandNumbers,
       categoryNumbers,
       min,
       max,
+      keyword,
     );
-    console.log("count - ", resultCount);
+
     return res.json({ data: result, dataCount: resultCount });
   } catch (e) {
     next(e);

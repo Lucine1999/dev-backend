@@ -61,7 +61,6 @@ export const deleteBrandDB = async (id) => {
         id: Number(id),
       },
     });
-
     return {
       data: deletedBrand,
       error: null,

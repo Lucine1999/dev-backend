@@ -15,7 +15,7 @@ export const createProduct = async (req, res, next) => {
     const createdProduct = await createProductDB(product);
 
     res.json({
-      product: createdProduct,
+      data: createdProduct,
       isAuth: res.locals.isAuth,
       user: res.locals.user,
     });
@@ -35,6 +35,7 @@ export const getAllProductsCount = async (req, res, next) => {
 
 export const getShopProducts = async (req, res, next) => {
   try {
+    const pageType = req.params;
     const page = +req.query.page || 1;
     const brand = req.query.brand;
     const category = req.query.category;
@@ -63,6 +64,7 @@ export const getShopProducts = async (req, res, next) => {
       min,
       max,
       keyword,
+      pageType,
     );
     const resultCount = await getFilteredProductsCountDB(
       brandNumbers,
@@ -89,9 +91,12 @@ export const getHighestPrice = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const updatedProduct = await updateProductDB(id, req.body);
-    res.json(updatedProduct.data);
+    const { productId } = req.params;
+    const updatedProduct = await updateProductDB(productId, req.body);
+    res.json({
+      data: updatedProduct.data,
+      user: res.locals.user,
+    });
   } catch (e) {
     next(e);
   }

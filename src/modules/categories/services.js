@@ -9,7 +9,7 @@ export const getCategories = async (req, res, next) => {
   try {
     const categories = await getAllCategoriesDB();
     res.json({
-      categories: categories.data,
+      data: categories.data,
     });
   } catch (error) {
     next(error);
@@ -22,7 +22,7 @@ export const createCategory = async (req, res, next) => {
     const createdCategory = await createCategoryDB(category);
 
     res.json({
-      category: createdCategory,
+      data: createdCategory,
       user: res.locals.user,
     });
   } catch (error) {
@@ -36,7 +36,7 @@ export const updateCategory = async (req, res, next) => {
     const updatedCategory = await updateCategoryDB(categoryId, req.body);
 
     res.json({
-      category: updatedCategory.data,
+      data: updatedCategory.data,
       user: res.locals.user,
     });
   } catch (error) {

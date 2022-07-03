@@ -29,14 +29,14 @@ model Product {
   price       Float      @db.Float
   discount    Int        @default(0) @db.Int
   description String?    @db.Text
-  brand       Brand      @relation(fields: [brandId], references: [id])
+  brand       Brand?     @relation(fields: [brandId], references: [id], onDelete: Cascade)
   brandId     Int        @db.Int
-  category    Category   @relation(fields: [categoryId], references: [id])
+  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  Int        @db.Int
   productImg  String     @db.Text
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
-  Wishlist    Wishlist[]
+  wishlist    Wishlist[]
 }
 
 model User {

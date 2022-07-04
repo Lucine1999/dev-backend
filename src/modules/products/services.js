@@ -103,9 +103,13 @@ export const updateProduct = async (req, res, next) => {
 };
 export const deleteProduct = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const deletedProduct = await deleteProductDB(id);
-    res.json(deletedProduct.data);
+    const { productId } = req.params;
+    const deletedProduct = await deleteProductDB(productId);
+
+    res.json({
+      data: deletedProduct.data,
+      user: res.locals.user,
+    });
   } catch (e) {
     next(e);
   }

@@ -11,8 +11,12 @@ import {
   getHighestPrice,
 } from "./services.js";
 
-const { createProductSchema, getProductByIdSchema, updateProductSchema } =
-  validations;
+const {
+  createProductSchema,
+  getProductByIdSchema,
+  updateProductSchema,
+  deleteProductSchema,
+} = validations;
 
 const router = Router();
 router.get("/getShopProducts/:pageType", getShopProducts);
@@ -38,6 +42,11 @@ router.patch(
   validate(updateProductSchema),
   updateProduct,
 );
-router.delete("/delete/:id", deleteProduct);
+router.delete(
+  "/product/:productId",
+  verifyUser,
+  validate(deleteProductSchema),
+  deleteProduct,
+);
 
 export { router as productsRoutes };

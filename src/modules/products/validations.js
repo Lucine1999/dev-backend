@@ -32,4 +32,9 @@ export default {
       productImg: Joi.string().uri().required(),
     }),
   },
+  deleteProductSchema: {
+    params: Joi.object({
+      productId: Joi.number().integer().required(),
+    }),
+  },
 };

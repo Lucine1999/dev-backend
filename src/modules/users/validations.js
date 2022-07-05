@@ -28,4 +28,33 @@ export default {
         .required(),
     }),
   },
+  deleteUserSchema: {
+    params: Joi.object({
+      userId: Joi.number().integer().required(),
+    }),
+  },
+  updateUserRoleSchema: {
+    params: Joi.object({
+      userId: Joi.number().integer().required(),
+    }),
+    body: Joi.object({
+      role: Joi.string().min(3).max(100).required(),
+    }),
+  },
+  updateUserDashboardSchema: {
+    params: Joi.object({
+      userId: Joi.number().integer().required(),
+    }),
+    body: Joi.object({
+      firstName: Joi.string().min(3).max(50),
+      lastName: Joi.string().min(3).max(100),
+      email: Joi.string().email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net", "ru"] },
+      }),
+      gender: Joi.string().min(3).max(100),
+      password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+      newPassword: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+    }),
+  },
 };

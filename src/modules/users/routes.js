@@ -8,9 +8,12 @@ import {
   signInUser,
   signOutUser,
   checkUserAuth,
+  updateUserRole,
+  deleteUser,
+  updateUserDashboard
 } from "./services.js";
 
-const { getUserByIdSchema, createUserSchema, loginUserSchema } = validations;
+const { getUserByIdSchema, createUserSchema, loginUserSchema, updateUserRoleSchema, deleteUserSchema, updateUserDashboardSchema } = validations;
 
 const router = Router();
 
@@ -20,4 +23,22 @@ router.get("/:userId", validate(getUserByIdSchema), getUserById);
 router.post("/signIn", validate(loginUserSchema), signInUser);
 router.post("/signUp", validate(createUserSchema), signUpUser);
 router.post("/signOut", signOutUser);
+router.put(
+  "/user/:userId",
+  verifyUser,
+  validate(updateUserDashboardSchema),
+  updateUserDashboard,
+);
+router.patch(
+  "/user/:userId",
+  verifyUser,
+  validate(updateUserRoleSchema),
+  updateUserRole,
+);
+router.delete(
+  "/user/:userId",
+  verifyUser,
+  validate(deleteUserSchema),
+  deleteUser,
+);
 export { router as usersRoutes };

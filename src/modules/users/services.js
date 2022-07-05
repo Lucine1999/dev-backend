@@ -11,6 +11,9 @@ import {
   addUserRefreshToken,
   getUserByEmailDb,
   removeUserRefreshToken,
+  updateUserRoleDB,
+  deleteUserDB,
+  updateUserDashboardDB,
 } from "./db.js";
 
 export const checkUserAuth = (req, res) => {
@@ -120,5 +123,70 @@ export const signOutUser = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const updateUserRole = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const updatedUser = await updateUserRoleDB(userId, req.body);
+
+    res.json({
+      userUpdated: updatedUser.data,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const deletedUser = await deleteUserDB(userId);
+
+    res.json({
+      data: deletedUser.data,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserDashboard = async (req, res, next) => {
+  try {
+    const { newPassword, password } = req.body;
+    const { userId } = req.params;
+    const user = await getUserByIdDb(userId)
+
+    const checkPassword = await comparePassword(password, user.data.password);
+
+    if (!checkPassword) {
+      return res.send({
+        type: "error",
+        message: "Invalid username or password",
+      });
+    }
+
+    delete req.body.newPassword;
+    const hashedPassword = await hashPassword(newPassword);
+
+    const updateData = {
+      ...req.body,
+      password: hashedPassword,
+    };
+
+    const updatedDashboard = await updateUserDashboardDB(userId, updateData);
+
+    res.json({
+      userDashboardUpdated: updatedDashboard.data,
+      isAuth: res.locals.isAuth,
+      user: res.locals.user,
+    });
+  } catch (error) {
+    next(error);
   }
 };

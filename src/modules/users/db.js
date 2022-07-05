@@ -21,7 +21,7 @@ export const getUserByIdDb = async (id) => {
   try {
     const users = await user.findUnique({
       where: {
-        id,
+        id: Number(id),
       },
     });
     return {
@@ -112,6 +112,70 @@ export const removeUserRefreshToken = async (id) => {
     return {
       data: null,
       error,
+    };
+  }
+};
+
+export const updateUserRoleDB = async (id, data) => {
+  try {
+    const updatedUser = await user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        ...data,
+      },
+    });
+    return {
+      data: updatedUser,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    };
+  }
+};
+
+export const deleteUserDB = async (id) => {
+  try {
+    const deletedUser = await user.delete({
+      where: {
+        id: Number(id),
+      },
+    });
+
+    return {
+      data: deletedUser,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    };
+  }
+};
+
+export const updateUserDashboardDB = async (id, data) => {
+  try {
+    const updatedDashboard = await user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        ...data,
+      },
+    });
+    return {
+      data: updatedDashboard,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
     };
   }
 };

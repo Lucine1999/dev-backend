@@ -10,7 +10,7 @@ const refreshKey = app.get("refreshKey");
 export const validate = (schema) => {
   if (typeof schema !== "object" || schema === null)
     throw new Error("Schema is not an object");
-
+    
   return async (req, res, next) => {
     const { params, body } = req;
 

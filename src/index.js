@@ -7,8 +7,8 @@ import {
 
 const PORT = app.get("port");
 app.use(routes);
-// handle 404 error
 
+// handle 404 error
 app.use((req, res, next) => {
   next(notFoundErrorCreator());
 });
@@ -16,8 +16,17 @@ app.use((req, res, next) => {
 // handle errors
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
-  const error = err.status ? err : internalServerErrorCreator();
-  const status = error.status;
+  let errResult;
+
+  if (err.status === 400 && err.details) {
+    delete err.details;
+    res.status(400).send("Bad Request");
+  }
+
+  errResult = err;
+
+  const error = errResult.status ? errResult : internalServerErrorCreator();
+  const status = errResult.status || 500;
 
   console.log(error.stack);
 

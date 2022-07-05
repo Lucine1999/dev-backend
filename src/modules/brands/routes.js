@@ -7,22 +7,34 @@ import {
   updateBrand,
   deleteBrand,
 } from "./services.js";
-import { verifyUser } from "../../helpers/common.js";
+import {
+  verifyUser,
+  adminUserCheck,
+  mainAdminUserCheck,
+} from "../../helpers/common.js";
 
 const { createBrandSchema, deleteBrandSchema, updateBrandSchema } = validations;
 const router = Router();
 
-router.get("/", verifyUser, getBrands);
-router.post("/brand", verifyUser, validate(createBrandSchema), createBrand);
+router.get("/", getBrands);
+router.post(
+  "/brand",
+  verifyUser,
+  adminUserCheck,
+  validate(createBrandSchema),
+  createBrand,
+);
 router.patch(
   "/brand/:brandId",
   verifyUser,
+  adminUserCheck,
   validate(updateBrandSchema),
   updateBrand,
 );
 router.delete(
   "/brand/:brandId",
   verifyUser,
+  adminUserCheck,
   validate(deleteBrandSchema),
   deleteBrand,
 );

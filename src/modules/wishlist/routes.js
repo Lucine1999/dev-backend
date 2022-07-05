@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { createWishlistItem, getWishlist, deleteWishlistItem } from "./services.js";
+import {
+  createWishlistItem,
+  getWishlist,
+  deleteWishlistItem,
+} from "./services.js";
+import { verifyUser } from "../../helpers/common.js";
 
 // import { validate } from '../../helpers/common.js'
 // import validations from './validations.js'
@@ -7,8 +12,8 @@ import { createWishlistItem, getWishlist, deleteWishlistItem } from "./services.
 
 const router = Router();
 
-router.post("/", createWishlistItem);
-router.get('/getWishlist', getWishlist)
-router.delete('/delete/:id', deleteWishlistItem)
+router.post("/create/:id", verifyUser, createWishlistItem);
+router.get("/getWishlist", verifyUser, getWishlist);
+router.delete("/delete/:id", verifyUser, deleteWishlistItem);
 
 export { router as wishlistRoutes };

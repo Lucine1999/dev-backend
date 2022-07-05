@@ -16,15 +16,20 @@ import {
   updateUserDashboardDB,
 } from "./db.js";
 
-export const checkUserAuth = (req, res) => {
-  res.json({ isAuth: res.locals.isAuth, user: res.locals.user });
+export const checkUserAuth = (req, res, next) => {
+  // console.log(res.locals.user);
+  res.status(200).send({
+    message: "Success",
+    isAuth: res.locals.isAuth,
+    role: res.locals.user.data.role,
+  });
 };
 
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await getAllUsersDb();
     const userData = responseDataCreator(users);
-    res.json({ ...userData, isAuth: res.locals.isAuth, user: res.locals.user });
+    res.json({ ...userData, isAuth: res.locals.isAuth });
   } catch (error) {
     next(error);
   }
@@ -49,10 +54,7 @@ export const signUpUser = async (req, res, next) => {
 
     const userExists = await getUserByEmailDb(email);
     if (userExists.data) {
-      return res.send({
-        type: "error",
-        message: "User with this email already exists",
-      });
+      res.status(400).send({ error: "Bad Request", key: "email" });
     }
     const hashedPassword = await hashPassword(password);
     const userData = {
@@ -79,21 +81,16 @@ export const signUpUser = async (req, res, next) => {
 export const signInUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+
     const user = await getUserByEmailDb(email);
 
     if (user.error || !user.data) {
-      return res.send({
-        type: "error",
-        message: "Invalid username or password",
-      });
+      res.status(400).send({ error: "Bad Request", key: "invalidEmail" });
     }
 
     const checkPassword = await comparePassword(password, user.data.password);
     if (!checkPassword) {
-      return res.send({
-        type: "error",
-        message: "Invalid username or password",
-      });
+      res.status(400).send({ error: "Bad Request", key: "invalidPassword" });
     }
 
     const id = user.data.id;
@@ -117,10 +114,7 @@ export const signOutUser = async (req, res, next) => {
     const id = req.body.id;
     await removeUserRefreshToken(id);
     res.clearCookie("access-token");
-    res.json({
-      result: "ok",
-      message: "You have successfully signed out!",
-    });
+    res.status(200).send({ message: "Success" });
   } catch (err) {
     next(err);
   }

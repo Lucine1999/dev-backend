@@ -7,6 +7,10 @@ export const getProductsDB = async (skip, take) => {
     const products = await product.findMany({
       skip,
       take,
+      include: {
+        category: true,
+        brand: true,
+      },
     });
     return products;
   } catch (error) {

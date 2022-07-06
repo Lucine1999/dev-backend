@@ -20,7 +20,7 @@ app.use((err, req, res, next) => {
 
   if (err.status === 400 && err.details) {
     delete err.details;
-    res.status(400).send("Bad Request");
+    return res.status(400).send("Bad Request");
   }
 
   errResult = err;

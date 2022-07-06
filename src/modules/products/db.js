@@ -22,8 +22,11 @@ export const getProductsDB = async (
   max,
   keyword,
   userId,
+  pageType,
 ) => {
   try {
+    const type = pageType === "shop" ? false : true;
+
     const products = await product.findMany({
       where: {
         ...{
@@ -64,6 +67,14 @@ export const getProductsDB = async (
       },
       skip: (page - 1) * 9,
       take: 9,
+      ...(type
+        ? {
+            include: {
+              brand: true,
+              category: true,
+            },
+          }
+        : {}),
     });
 
     return products;
@@ -130,6 +141,7 @@ export const getHighestPriceDB = async () => {
 
 export const createProductDB = async (productData) => {
   try {
+    console.log("productData", productData);
     const createdProduct = await product.create({
       data: productData,
     });

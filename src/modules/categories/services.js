@@ -8,6 +8,7 @@ import {
 export const getCategories = async (req, res, next) => {
   try {
     const categories = await getAllCategoriesDB();
+
     res.json({
       categories: categories.data,
     });

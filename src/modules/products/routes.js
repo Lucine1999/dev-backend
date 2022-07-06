@@ -24,7 +24,7 @@ const {
 } = validations;
 
 const router = Router();
-router.get("/getShopProducts/:pageType", getShopProducts);
+router.get("/getShopProducts/:pageType", checkUserAuth, getShopProducts);
 router.get(
   "/getProducts/:productId",
   validate(getProductByIdSchema),

@@ -15,15 +15,22 @@ import {
   checkUserAuth,
   updateUserRole,
   deleteUser,
-  updateUserDashboard
+  updateUserDashboard,
 } from "./services.js";
 
-const { getUserByIdSchema, createUserSchema, loginUserSchema, updateUserRoleSchema, deleteUserSchema, updateUserDashboardSchema } = validations;
+const {
+  getUserByIdSchema,
+  createUserSchema,
+  loginUserSchema,
+  updateUserRoleSchema,
+  deleteUserSchema,
+  updateUserDashboardSchema,
+} = validations;
 
 const router = Router();
 
-router.get("/", verifyUser, mainAdminUserCheck, getAllUsers);
-router.get("/auth", verifyUser, checkUserAuth);
+router.get("/", verifyUser, mainAdminUserCheck, getAllUsers); // ???????? petqa get all users
+router.get("/auth", verifyUser, checkUserAuth); // ???????? why checkuserauth
 router.get("/:userId", validate(getUserByIdSchema), getUserById);
 router.post("/signIn", validate(loginUserSchema), signInUser);
 router.post("/signUp", validate(createUserSchema), signUpUser);

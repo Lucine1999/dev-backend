@@ -35,7 +35,7 @@ export const getAllProductsCount = async (req, res, next) => {
 
 export const getShopProducts = async (req, res, next) => {
   try {
-    const pageType = req.params;
+    const pageType = req.params.pageType;
     const page = +req.query.page || 1;
     const brand = req.query.brand;
     const category = req.query.category;

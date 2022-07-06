@@ -25,8 +25,6 @@ export const getProductsDB = async (
   pageType,
 ) => {
   try {
-    const type = pageType === "shop" ? false : true;
-
     const products = await product.findMany({
       where: {
         ...{
@@ -64,17 +62,11 @@ export const getProductsDB = async (
             id: true,
           },
         },
+        brand: pageType === "admin",
+        category: pageType === "admin",
       },
       skip: (page - 1) * 9,
       take: 9,
-      ...(type
-        ? {
-            include: {
-              brand: true,
-              category: true,
-            },
-          }
-        : {}),
     });
 
     return products;

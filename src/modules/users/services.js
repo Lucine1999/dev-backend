@@ -161,7 +161,7 @@ export const updateUserDashboard = async (req, res, next) => {
     if (!checkPassword) {
       return res.send({
         type: "error",
-        message: "Invalid username or password",
+        message: "Invalid password",
       });
     }
 

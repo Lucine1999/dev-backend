@@ -12,7 +12,7 @@ model Brand {
   name      String    @db.VarChar(250)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
-  Product   Product[]
+  product   Product[]
 }
 
 model Category {
@@ -20,7 +20,7 @@ model Category {
   name      String    @db.VarChar(250)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
-  Product   Product[]
+  product   Product[]
 }
 
 model Product {
@@ -29,10 +29,10 @@ model Product {
   price       Float      @db.Float
   discount    Int        @default(0) @db.Int
   description String?    @db.Text
-  brand       Brand?     @relation(fields: [brandId], references: [id], onDelete: Cascade)
-  brandId     Int        @db.Int
-  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId  Int        @db.Int
+  brand       Brand?     @relation(fields: [brandId], references: [id])
+  brandId     Int?
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
   productImg  String     @db.Text
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
@@ -57,8 +57,8 @@ model User {
 
 model Wishlist {
   id        Int      @id @default(autoincrement())
-  productId Int      @db.Int
-  Product   Product  @relation(fields: [productId], references: [id])
+  productId Int?
+  product   Product? @relation(fields: [productId], references: [id])
   User      User     @relation(fields: [userId], references: [id])
   userId    Int      @db.Int
   createdAt DateTime @default(now())

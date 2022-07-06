@@ -1,6 +1,7 @@
+import { badRequestErrorCreator } from "../../helpers/errors.js";
 import {
   getWishlistDB,
-  createWishlistDB,
+  createWishlistItemDB,
   deleteWishlistItemIdDB,
 } from "./db.js";
 
@@ -8,7 +9,7 @@ export const getWishlist = async (req, res, next) => {
   const userId = res.locals.user.data.id;
   try {
     const wishlist = await getWishlistDB(userId);
-    res.status(200).json({ wishlist: wishlist.data });
+    res.status(200).json({ data: wishlist.data });
   } catch (err) {
     next(err);
   }
@@ -17,10 +18,14 @@ export const getWishlist = async (req, res, next) => {
 export const createWishlistItem = async (req, res, next) => {
   try {
     const userId = res.locals.user.data.id;
-    const productId = Number(req.params.id);
-    const createdWishlist = await createWishlistDB({ productId, userId });
+    const productId = +req.body.productId;
+    const createdWishlist = await createWishlistItemDB({ productId, userId });
 
-    res.json(createdWishlist.data);
+    res.json({
+      data: { id: createdWishlist.data.id },
+      type: "create",
+      result: "success",
+    });
   } catch (error) {
     next(error);
   }
@@ -28,10 +33,16 @@ export const createWishlistItem = async (req, res, next) => {
 
 export const deleteWishlistItem = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const userId = res.locals.user.data.id;
-    const deletedItem = await deleteWishlistItemIdDB({ id, userId });
-    res.json(deletedItem.data);
+    const deletedItem = await deleteWishlistItemIdDB(+req.params.wishlistId);
+    if (deletedItem.data) {
+      return res.json({
+        data: { id: deletedItem.data?.id },
+        type: "delete",
+        result: "success",
+      });
+    }
+
+    return next(badRequestErrorCreator());
   } catch (e) {
     next(e);
   }

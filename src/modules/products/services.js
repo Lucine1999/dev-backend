@@ -63,6 +63,7 @@ export const getShopProducts = async (req, res, next) => {
       min,
       max,
       keyword,
+      res.locals.userId,
     );
     const resultCount = await getFilteredProductsCountDB(
       brandNumbers,
@@ -109,8 +110,11 @@ export const deleteProduct = async (req, res, next) => {
 export const getProductById = async (req, res, next) => {
   try {
     const { productId } = req.params;
-    const foundProduct = await getProductByIdDB(productId);
-    res.json(foundProduct);
+    const product = await getProductByIdDB(
+      +productId,
+      res.locals.isAuth ? res.locals.userId : null,
+    );
+    res.json({ data: product });
   } catch (error) {
     next(error);
   }

@@ -81,9 +81,6 @@ export const signInUser = async (req, res, next) => {
 
     const user = await getUserByEmailDb(email);
 
-    console.log("email - ", email);
-    console.log("password - ", password);
-
     if (user.error || !user.data) {
       res.status(400).send({ error: "Bad Request", key: "invalidEmail" });
     }
@@ -103,7 +100,7 @@ export const signInUser = async (req, res, next) => {
     res.cookie("access-token", accessToken, {
       httpOnly: true,
     });
-    return res.json({ user: user.data });
+    return res.json({ user: user.data, isAuth: true });
   } catch (err) {
     next(err);
   }

@@ -24,6 +24,28 @@ export const validate = (schema) => {
   };
 };
 
+export const checkUserAuth = async (req, res, next) => {
+  try {
+    const accessToken = req.cookies["access-token"];
+    if (!accessToken) {
+      res.locals.isAuth = false;
+      return next();
+    }
+    const accessTokenCheck = validTokenCheck(accessToken, "access");
+    if (accessTokenCheck.error) {
+      res.clearCookie("access-token");
+      res.locals.isAuth = false;
+      return next();
+    }
+    const id = accessTokenCheck.decode.id;
+    res.locals.isAuth = true;
+    res.locals.userId = id;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const verifyUser = async (req, res, next) => {
   try {
     const accessToken = req.cookies["access-token"];

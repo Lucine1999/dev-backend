@@ -21,6 +21,7 @@ export const getProductsDB = async (
   min,
   max,
   keyword,
+  userId,
 ) => {
   try {
     const products = await product.findMany({
@@ -48,6 +49,16 @@ export const getProductsDB = async (
             ...(keyword && {
               contains: keyword,
             }),
+          },
+        },
+      },
+      include: {
+        wishlist: !!userId && {
+          where: {
+            userId,
+          },
+          select: {
+            id: true,
           },
         },
       },
@@ -214,11 +225,11 @@ export const deleteProductsByBrandDB = async (id) => {
   }
 };
 
-export const getProductByIdDB = async (id) => {
+export const getProductByIdDB = async (productId, userId) => {
   try {
-    const productFound = await product.findUnique({
+    const productById = await product.findUnique({
       where: {
-        id: Number(id),
+        id: Number(productId),
       },
       include: {
         category: {
@@ -226,12 +237,20 @@ export const getProductByIdDB = async (id) => {
             name: true,
           },
         },
+        ...(userId && {
+          wishlist: {
+            select: {
+              id: true,
+            },
+            where: {
+              productId,
+              userId,
+            },
+          },
+        }),
       },
     });
-    return {
-      data: productFound,
-      error: null,
-    };
+    return productById;
   } catch (error) {
     return {
       data: null,

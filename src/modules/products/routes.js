@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validate, verifyUser } from "../../helpers/common.js";
+import { checkUserAuth, validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
 import {
   createProduct,
@@ -14,10 +14,11 @@ import {
 const { createProductSchema, getProductByIdSchema } = validations;
 
 const router = Router();
-router.get("/getShopProducts", getShopProducts);
+router.get("/getShopProducts", checkUserAuth, getShopProducts);
 router.get(
   "/getProducts/:productId",
   validate(getProductByIdSchema),
+  checkUserAuth,
   getProductById,
 );
 router.get("/getHighestPrice", getHighestPrice);

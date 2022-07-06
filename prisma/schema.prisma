@@ -36,7 +36,7 @@ model Product {
   productImg  String     @db.Text
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
-  Wishlist    Wishlist[]
+  wishlist    Wishlist[]
 }
 
 model User {

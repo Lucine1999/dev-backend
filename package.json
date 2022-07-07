@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "type": "module",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "devDependencies": {
     "dotenv": "^16.0.1",
     "eslint": "^8.1.0",

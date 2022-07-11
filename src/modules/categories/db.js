@@ -1,6 +1,6 @@
 import { prisma } from "../../services/Prisma.js";
 
-const { category } = prisma;
+const { category, product } = prisma;
 
 export const getAllCategoriesDB = async (searchKey) => {
   try {
@@ -54,16 +54,39 @@ export const updateCategoryDB = async (id, data) => {
     };
   }
 };
-export const deleteCategoryDB = async (id) => {
+export const deleteCategoryDB = async (id, relatedProductsDelete) => {
   try {
+    console.log("related check", relatedProductsDelete);
     const deletedCategory = await category.delete({
       where: {
         id: Number(id),
       },
     });
 
+    let updatedProducts;
+
+    if (relatedProductsDelete) {
+      console.log("aaaaaaaaaaaa");
+      updatedProducts = await product.deleteMany({
+        where: {
+          categoryId: Number(id),
+        },
+      });
+    } else {
+      console.log("bbbbbbbbbbbbbbbbbbb");
+      updatedProducts = await product.updateMany({
+        where: {
+          categoryId: Number(id),
+        },
+        data: {
+          categoryId: null,
+        },
+      });
+    }
+
     return {
       data: deletedCategory,
+      changedProducts: updatedProducts,
       error: null,
     };
   } catch (error) {

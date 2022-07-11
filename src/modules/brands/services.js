@@ -10,7 +10,6 @@ export const getBrands = async (req, res, next) => {
     const brands = await getAllBrandsDB();
     res.json({
       data: brands.data,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);
@@ -24,8 +23,7 @@ export const createBrand = async (req, res, next) => {
     const createdBrand = await createBrandDB(brand);
 
     res.json({
-      data: createdBrand,
-      user: res.locals.user,
+      data: createdBrand.data,
     });
   } catch (error) {
     next(error);
@@ -39,7 +37,6 @@ export const updateBrand = async (req, res, next) => {
 
     res.json({
       data: updatedBrand.data,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);
@@ -48,11 +45,14 @@ export const updateBrand = async (req, res, next) => {
 export const deleteBrand = async (req, res, next) => {
   try {
     const { brandId } = req.params;
-    const deletedBrand = await deleteBrandDB(brandId);
+    let relatedProductsDelete = false;
+    if (req.body?.relatedProductsDelete) {
+      relatedProductsDelete = req.body.relatedProductsDelete;
+    }
+    const deletedBrand = await deleteBrandDB(brandId, relatedProductsDelete);
 
     res.json({
       data: deletedBrand.data,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);

@@ -15,9 +15,7 @@ export const createProduct = async (req, res, next) => {
     const createdProduct = await createProductDB(product);
 
     res.json({
-      data: createdProduct,
-      isAuth: res.locals.isAuth,
-      user: res.locals.user,
+      data: createdProduct.data,
     });
   } catch (error) {
     next(error);
@@ -96,7 +94,6 @@ export const updateProduct = async (req, res, next) => {
     const updatedProduct = await updateProductDB(productId, req.body);
     res.json({
       data: updatedProduct.data,
-      user: res.locals.user,
     });
   } catch (e) {
     next(e);
@@ -109,7 +106,6 @@ export const deleteProduct = async (req, res, next) => {
 
     res.json({
       data: deletedProduct.data,
-      user: res.locals.user,
     });
   } catch (e) {
     next(e);

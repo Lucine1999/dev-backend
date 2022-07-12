@@ -17,7 +17,6 @@ import {
 } from "./db.js";
 
 export const checkUserAuth = (req, res, next) => {
-  // console.log(res.locals.user);
   res.send({
     message: "Success",
     isAuth: res.locals.isAuth,
@@ -72,7 +71,7 @@ export const signUpUser = async (req, res, next) => {
     res.cookie("access-token", accessToken, {
       httpOnly: true,
     });
-    res.json({ user: user.data });
+    res.json({ user: user.data, isAuth: true });
   } catch (err) {
     next(err);
   }
@@ -154,7 +153,7 @@ export const updateUserDashboard = async (req, res, next) => {
   try {
     const { newPassword, password } = req.body;
     const { userId } = req.params;
-    const user = await getUserByIdDb(userId)
+    const user = await getUserByIdDb(userId);
 
     const checkPassword = await comparePassword(password, user.data.password);
 

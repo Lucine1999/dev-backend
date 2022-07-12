@@ -1,10 +1,10 @@
 import { prisma } from "../../services/Prisma.js";
 
-const { category } = prisma;
+const { category, product } = prisma;
 
-export const getAllCategoriesDB = async (searchKey) => {
+export const getAllCategoriesDB = async () => {
   try {
-    const categories = await category.findMany(searchKey);
+    const categories = await category.findMany();
     return {
       data: categories,
       error: null,
@@ -54,7 +54,7 @@ export const updateCategoryDB = async (id, data) => {
     };
   }
 };
-export const deleteCategoryDB = async (id) => {
+export const deleteCategoryDB = async (id, relatedProductsDelete) => {
   try {
     const deletedCategory = await category.delete({
       where: {
@@ -62,8 +62,28 @@ export const deleteCategoryDB = async (id) => {
       },
     });
 
+    let updatedProducts;
+
+    if (relatedProductsDelete) {
+      updatedProducts = await product.deleteMany({
+        where: {
+          categoryId: Number(id),
+        },
+      });
+    } else {
+      updatedProducts = await product.updateMany({
+        where: {
+          categoryId: Number(id),
+        },
+        data: {
+          categoryId: null,
+        },
+      });
+    }
+
     return {
       data: deletedCategory,
+      changedProducts: updatedProducts,
       error: null,
     };
   } catch (error) {

@@ -55,6 +55,7 @@ model User {
   updatedAt       DateTime   @default(now()) @updatedAt
   wishlist        Wishlist[]
   Cart            Cart[]
+  contact         Contact[]
 }
 
 model Wishlist {
@@ -65,7 +66,18 @@ model Wishlist {
   userId    Int      @db.Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
 
+model Contact {
+  id        Int      @id @default(autoincrement())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?     @db.Int
+  name      String   @db.VarChar(500)
+  email     String   @db.VarChar(500)
+  subject   String   @db.Text
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Cart {

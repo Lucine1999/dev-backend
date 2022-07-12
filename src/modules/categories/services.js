@@ -23,8 +23,7 @@ export const createCategory = async (req, res, next) => {
     const createdCategory = await createCategoryDB(category);
 
     res.json({
-      data: createdCategory,
-      user: res.locals.user,
+      data: createdCategory.data,
     });
   } catch (error) {
     next(error);
@@ -38,7 +37,6 @@ export const updateCategory = async (req, res, next) => {
 
     res.json({
       data: updatedCategory.data,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);
@@ -47,11 +45,19 @@ export const updateCategory = async (req, res, next) => {
 export const deleteCategory = async (req, res, next) => {
   try {
     const { categoryId } = req.params;
-    const deletedCategory = await deleteCategoryDB(categoryId);
+
+    let relatedProductsDelete = false;
+    if (req.body?.relatedProductsDelete) {
+      relatedProductsDelete = req.body.relatedProductsDelete;
+    }
+
+    const deletedCategory = await deleteCategoryDB(
+      categoryId,
+      relatedProductsDelete,
+    );
 
     res.json({
       data: deletedCategory.data,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);

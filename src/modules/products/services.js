@@ -15,9 +15,7 @@ export const createProduct = async (req, res, next) => {
     const createdProduct = await createProductDB(product);
 
     res.json({
-      data: createdProduct,
-      isAuth: res.locals.isAuth,
-      user: res.locals.user,
+      data: createdProduct.data,
     });
   } catch (error) {
     next(error);
@@ -42,6 +40,8 @@ export const getShopProducts = async (req, res, next) => {
     const min = +req.query.min;
     const max = +req.query.max;
     const keyword = req.query.keyword;
+    const order = req.query.order;
+    const sort = req.query.sort;
 
     const brandNumbers = [];
     const categoryNumbers = [];
@@ -56,6 +56,8 @@ export const getShopProducts = async (req, res, next) => {
     } else if (category) {
       categoryNumbers.push(+category);
     }
+    const orderPostsBy = order === "date" || !order ? "updatedAt" : order;
+    const sortPostsBy = !sort ? "desc" : sort;
 
     const result = await getProductsDB(
       page,
@@ -66,6 +68,8 @@ export const getShopProducts = async (req, res, next) => {
       keyword,
       res.locals.userId,
       pageType,
+      orderPostsBy,
+      sortPostsBy,
     );
     const resultCount = await getFilteredProductsCountDB(
       brandNumbers,
@@ -96,7 +100,6 @@ export const updateProduct = async (req, res, next) => {
     const updatedProduct = await updateProductDB(productId, req.body);
     res.json({
       data: updatedProduct.data,
-      user: res.locals.user,
     });
   } catch (e) {
     next(e);
@@ -109,7 +112,6 @@ export const deleteProduct = async (req, res, next) => {
 
     res.json({
       data: deletedProduct.data,
-      user: res.locals.user,
     });
   } catch (e) {
     next(e);

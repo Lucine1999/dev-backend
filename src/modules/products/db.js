@@ -23,6 +23,8 @@ export const getProductsDB = async (
   keyword,
   userId,
   pageType,
+  order,
+  sort,
 ) => {
   try {
     const products = await product.findMany({
@@ -67,6 +69,9 @@ export const getProductsDB = async (
       },
       skip: (page - 1) * 9,
       take: 9,
+      orderBy: {
+        [order]: sort,
+      },
     });
 
     return products;

@@ -40,6 +40,8 @@ export const getShopProducts = async (req, res, next) => {
     const min = +req.query.min;
     const max = +req.query.max;
     const keyword = req.query.keyword;
+    const order = req.query.order;
+    const sort = req.query.sort;
 
     const brandNumbers = [];
     const categoryNumbers = [];
@@ -54,6 +56,8 @@ export const getShopProducts = async (req, res, next) => {
     } else if (category) {
       categoryNumbers.push(+category);
     }
+    const orderPostsBy = order === "date" || !order ? "updatedAt" : order;
+    const sortPostsBy = !sort ? "desc" : sort;
 
     const result = await getProductsDB(
       page,
@@ -64,6 +68,8 @@ export const getShopProducts = async (req, res, next) => {
       keyword,
       res.locals.userId,
       pageType,
+      orderPostsBy,
+      sortPostsBy,
     );
     const resultCount = await getFilteredProductsCountDB(
       brandNumbers,

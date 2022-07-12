@@ -133,7 +133,6 @@ export const getHighestPriceDB = async () => {
 
 export const createProductDB = async (productData) => {
   try {
-    console.log("productData", productData);
     const createdProduct = await product.create({
       data: productData,
     });

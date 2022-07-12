@@ -17,7 +17,6 @@ import {
 } from "./db.js";
 
 export const checkUserAuth = (req, res, next) => {
-  // console.log(res.locals.user);
   res.send({
     message: "Success",
     isAuth: res.locals.isAuth,

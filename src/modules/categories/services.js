@@ -46,8 +46,6 @@ export const deleteCategory = async (req, res, next) => {
   try {
     const { categoryId } = req.params;
 
-    console.log(req.body);
-
     let relatedProductsDelete = false;
     if (req.body?.relatedProductsDelete) {
       relatedProductsDelete = req.body.relatedProductsDelete;

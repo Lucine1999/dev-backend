@@ -7,11 +7,7 @@ import {
   updateBrand,
   deleteBrand,
 } from "./services.js";
-import {
-  verifyUser,
-  adminUserCheck,
-  mainAdminUserCheck,
-} from "../../helpers/common.js";
+import { verifyUser, adminUserCheck } from "../../helpers/common.js";
 
 const { createBrandSchema, deleteBrandSchema, updateBrandSchema } = validations;
 const router = Router();

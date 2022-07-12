@@ -45,6 +45,7 @@ export const updateBrand = async (req, res, next) => {
     next(error);
   }
 };
+
 export const deleteBrand = async (req, res, next) => {
   try {
     const { brandId } = req.params;

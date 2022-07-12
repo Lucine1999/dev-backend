@@ -64,6 +64,14 @@ export const getProductsDB = async (
             id: true,
           },
         },
+        cart: !!userId && {
+          where: {
+            userId,
+          },
+          select: {
+            id: true,
+          },
+        },
         brand: pageType === "admin",
         category: pageType === "admin",
       },
@@ -249,6 +257,16 @@ export const getProductByIdDB = async (productId, userId) => {
           wishlist: {
             select: {
               id: true,
+            },
+            where: {
+              productId,
+              userId,
+            },
+          },
+          cart: {
+            select: {
+              id: true,
+              count: true,
             },
             where: {
               productId,

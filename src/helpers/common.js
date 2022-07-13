@@ -10,7 +10,7 @@ const refreshKey = app.get("refreshKey");
 export const validate = (schema) => {
   if (typeof schema !== "object" || schema === null)
     throw new Error("Schema is not an object");
-    
+
   return async (req, res, next) => {
     const { params, body } = req;
 
@@ -146,3 +146,19 @@ export const validTokenCheck = (token, type) => {
 
   return result;
 };
+
+export const fillteredUsers = (data) => {
+
+ return data.map((el) => {
+    let newUserObj = {}
+    for (const key in el) {
+        if((key === "id") || (key === "firstName") || (key === "lastName") || (key === "role") || (key === "email")) {
+            newUserObj[key] = el[key]
+        } else {
+            continue;
+        }
+    }
+    return newUserObj;
+  })
+
+}

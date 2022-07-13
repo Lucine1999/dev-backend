@@ -15,10 +15,19 @@ import {
   checkUserAuth,
   updateUserRole,
   deleteUser,
-  updateUserDashboard
+  updateUserPersonalInfo,
+  updateUserPassword
 } from "./services.js";
 
-const { getUserByIdSchema, createUserSchema, loginUserSchema, updateUserRoleSchema, deleteUserSchema, updateUserDashboardSchema } = validations;
+const {
+  getUserByIdSchema,
+  createUserSchema,
+  loginUserSchema,
+  updateUserRoleSchema,
+  deleteUserSchema,
+  updateUserPersonalInfoSchema,
+  updateUserPasswordSchema,
+} = validations;
 
 const router = Router();
 
@@ -28,11 +37,17 @@ router.get("/:userId", validate(getUserByIdSchema), getUserById);
 router.post("/signIn", validate(loginUserSchema), signInUser);
 router.post("/signUp", validate(createUserSchema), signUpUser);
 router.post("/signOut", signOutUser);
-router.put(
-  "/user/:userId",
+router.patch(
+  "/personalInfo",
   verifyUser,
-  validate(updateUserDashboardSchema),
-  updateUserDashboard,
+  validate(updateUserPersonalInfoSchema),
+  updateUserPersonalInfo,
+);
+router.patch(
+  "/password",
+  verifyUser,
+  validate(updateUserPasswordSchema),
+  updateUserPassword,
 );
 router.patch(
   "/user/:userId",

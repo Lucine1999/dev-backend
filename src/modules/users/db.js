@@ -158,9 +158,9 @@ export const deleteUserDB = async (id) => {
   }
 };
 
-export const updateUserDashboardDB = async (id, data) => {
+export const updateUserPersonalInfoDB = async (id, data) => {
   try {
-    const updatedDashboard = await user.update({
+    const updatedPersonalInfo = await user.update({
       where: {
         id: Number(id),
       },
@@ -169,7 +169,29 @@ export const updateUserDashboardDB = async (id, data) => {
       },
     });
     return {
-      data: updatedDashboard,
+      data: updatedPersonalInfo,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    };
+  }
+};
+
+export const updateUserPasswordDB = async (id, data) => {
+  try {
+    const updatedPersonalInfo = await user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        ...data,
+      },
+    });
+    return {
+      data: updatedPersonalInfo,
       error: null,
     };
   } catch (error) {

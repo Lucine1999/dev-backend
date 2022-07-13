@@ -34,27 +34,25 @@ export default {
     }),
   },
   updateUserRoleSchema: {
-    params: Joi.object({
-      userId: Joi.number().integer().required(),
-    }),
     body: Joi.object({
       role: Joi.string().min(3).max(100).required(),
     }),
   },
-  updateUserDashboardSchema: {
-    params: Joi.object({
-      userId: Joi.number().integer().required(),
-    }),
+  updateUserPersonalInfoSchema: {
     body: Joi.object({
-      firstName: Joi.string().min(3).max(50),
-      lastName: Joi.string().min(3).max(100),
+      firstName: Joi.string().min(3).max(50).required(),
+      lastName: Joi.string().min(3).max(100).required(),
       email: Joi.string().email({
         minDomainSegments: 2,
         tlds: { allow: ["com", "net", "ru"] },
-      }),
-      gender: Joi.string().min(3).max(100),
-      password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
-      newPassword: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+      }).required(),
+      gender: Joi.string().min(3).max(100).required(),
+    }),
+  },
+  updateUserPasswordSchema: {
+    body: Joi.object({
+      password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
+      newPassword: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
     }),
   },
 };

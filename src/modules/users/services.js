@@ -3,6 +3,7 @@ import {
   hashPassword,
   signToken,
   comparePassword,
+  fillteredUsers,
 } from "../../helpers/common.js";
 import {
   getAllUsersDb,
@@ -13,7 +14,8 @@ import {
   removeUserRefreshToken,
   updateUserRoleDB,
   deleteUserDB,
-  updateUserDashboardDB,
+  updateUserPersonalInfoDB,
+  updateUserPasswordDB,
 } from "./db.js";
 
 export const checkUserAuth = (req, res, next) => {
@@ -22,6 +24,10 @@ export const checkUserAuth = (req, res, next) => {
     message: "Success",
     isAuth: res.locals.isAuth,
     role: res.locals.user.data.role,
+    firstName: res.locals.user.data.firstName,
+    lastName: res.locals.user.data.lastName,
+    gender: res.locals.user.data.gender,
+    email: res.locals.user.data.email,
   });
 };
 
@@ -29,7 +35,9 @@ export const getAllUsers = async (req, res, next) => {
   try {
     const users = await getAllUsersDb();
     const userData = responseDataCreator(users);
-    res.json({ ...userData, isAuth: res.locals.isAuth });
+    const userDataFilterid = fillteredUsers(userData.data);
+
+    res.json({ data: userDataFilterid, isAuth: res.locals.isAuth });
   } catch (error) {
     next(error);
   }
@@ -123,12 +131,13 @@ export const signOutUser = async (req, res, next) => {
 export const updateUserRole = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const updatedUser = await updateUserRoleDB(userId, req.body);
+    const users = await updateUserRoleDB(userId, req.body);
+    const data = new Array(users.data);
+    const updatedUser = fillteredUsers(data);
 
     res.json({
-      userUpdated: updatedUser.data,
+      userUpdated: updatedUser[0],
       isAuth: res.locals.isAuth,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);
@@ -143,42 +152,60 @@ export const deleteUser = async (req, res, next) => {
     res.json({
       data: deletedUser.data,
       isAuth: res.locals.isAuth,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);
   }
 };
 
-export const updateUserDashboard = async (req, res, next) => {
+export const updateUserPersonalInfo = async (req, res, next) => {
+  try {
+    const userId = res.locals.user.data.id;
+
+    const updatedPersonalInfo = await updateUserPersonalInfoDB(
+      userId,
+      req.body,
+    );
+    
+
+    res.json({
+      isAuth: res.locals.isAuth,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserPassword = async (req, res, next) => {
   try {
     const { newPassword, password } = req.body;
-    const { userId } = req.params;
-    const user = await getUserByIdDb(userId)
+    if (newPassword === undefined) {
+      return res.send({
+       type: "error",
+       message: "New passwords are not confirm"
+      })
+    }
+    const userId = res.locals.user.data.id;
+    const user = await getUserByIdDb(userId);
 
     const checkPassword = await comparePassword(password, user.data.password);
 
     if (!checkPassword) {
       return res.send({
         type: "error",
-        message: "Invalid username or password",
+        message: "Invalid password",
       });
     }
 
-    delete req.body.newPassword;
     const hashedPassword = await hashPassword(newPassword);
 
     const updateData = {
-      ...req.body,
       password: hashedPassword,
     };
-
-    const updatedDashboard = await updateUserDashboardDB(userId, updateData);
+    const updatedPassword = await updateUserPasswordDB(userId, updateData);
 
     res.json({
-      userDashboardUpdated: updatedDashboard.data,
       isAuth: res.locals.isAuth,
-      user: res.locals.user,
     });
   } catch (error) {
     next(error);

@@ -1,5 +1,4 @@
 import { prisma } from "../../services/Prisma.js";
-import { updateCartCount } from "./services.js";
 
 const { cart } = prisma;
 
@@ -62,19 +61,26 @@ export const deleteCartItemIdDB = async (cartId) => {
   }
 };
 
-export const updateCartCountDB = async (id, count) => {
+export const upsertCartDB = async (cartId, userId, productId, count) => {
   try {
-    const updatedCount = await cart.update({
+    console.log(cartId);
+    const upsertedData = await cart.upsert({
       where: {
-        id: Number(id),
+        id: cartId,
       },
-      data: {
-        count: count,
+      update: {
+        count,
+      },
+      create: {
+        count,
+        userId,
+        productId,
       },
     });
+
     return {
-      data: updatedCount,
-      error: null,
+      id: upsertedData.id,
+      count: upsertedData.count,
     };
   } catch (error) {
     return {
@@ -83,13 +89,3 @@ export const updateCartCountDB = async (id, count) => {
     };
   }
 };
-export const totalPriceDB = async() => {
-  try{
-
-  }catch(error){
-    return {
-      data: null,
-      error: error,
-    };
-  }
-}

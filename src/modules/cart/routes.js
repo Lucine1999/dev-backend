@@ -3,7 +3,7 @@ import {
   createCartItem,
   getCartItems,
   deleteCartItem,
-  updateCartCount,
+  upsertCartCount,
 } from "./services.js";
 import { validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
@@ -19,6 +19,6 @@ router.delete(
   verifyUser,
   deleteCartItem,
 );
-router.put("/count/:id", verifyUser, updateCartCount);
+router.put("/count", verifyUser, upsertCartCount);
 
 export { router as cartRoutes };

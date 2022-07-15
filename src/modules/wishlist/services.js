@@ -23,8 +23,6 @@ export const createWishlistItem = async (req, res, next) => {
 
     res.json({
       data: { id: createdWishlist.data.id },
-      type: "create",
-      result: "success",
     });
   } catch (error) {
     next(error);
@@ -37,8 +35,6 @@ export const deleteWishlistItem = async (req, res, next) => {
     if (deletedItem.data) {
       return res.json({
         data: { id: deletedItem.data?.id },
-        type: "delete",
-        result: "success",
       });
     }
 

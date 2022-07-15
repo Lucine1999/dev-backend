@@ -3,7 +3,7 @@ import {
   getCartItemsDB,
   createCartItemDB,
   deleteCartItemIdDB,
-  updateCartCountDB,
+  upsertCartDB,
 } from "./db.js";
 
 export const getCartItems = async (req, res, next) => {
@@ -37,8 +37,6 @@ export const deleteCartItem = async (req, res, next) => {
     if (deletedItem.data) {
       return res.json({
         data: { id: deletedItem.data?.id },
-        type: "delete",
-        result: "success",
       });
     }
 
@@ -47,17 +45,16 @@ export const deleteCartItem = async (req, res, next) => {
     next(e);
   }
 };
-export const updateCartCount = async (req, res, next) => {
-  const userId = res.locals.user.data.id;
+export const upsertCartCount = async (req, res, next) => {
   try {
-    const id = +req.params.id;
+    const userId = res.locals.user.data.id;
+    const cartId = +req.body.cardId;
+    const productId = +req.body.productId;
     const count = +req.body.count;
-    const updatedCount = await updateCartCountDB(id, count);
-    const data = await getCartItemsDB(userId)
+    const upsertedData = await upsertCartDB(cartId, userId, productId, count);
+
     res.json({
-      data: data,
-      type: "update",
-      result: "success",
+      data: upsertedData,
     });
   } catch (error) {
     next(error);

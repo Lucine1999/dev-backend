@@ -4,6 +4,7 @@ import {
   createCartItemDB,
   deleteCartItemIdDB,
   upsertCartDB,
+  deleteCartItemsDB,
 } from "./db.js";
 
 export const getCartItems = async (req, res, next) => {
@@ -56,6 +57,16 @@ export const upsertCartCount = async (req, res, next) => {
     res.json({
       data: upsertedData,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteCartItems = async (req, res, next) => {
+  const userId = res.locals.user.data.id;
+  try {
+    const resultAfterDeletion = await deleteCartItemsDB(userId);
+    return res.status(200).json(resultAfterDeletion);
   } catch (error) {
     next(error);
   }

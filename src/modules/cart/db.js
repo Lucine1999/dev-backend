@@ -89,3 +89,27 @@ export const upsertCartDB = async (cartId, userId, productId, count) => {
     };
   }
 };
+
+export const deleteCartItemsDB = async (userId) => {
+  try {
+    const deletedItems = await cart.deleteMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return {
+      data: {
+        deletedItems,
+        result: "success",
+        type: "deleteMany",
+      },
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    };
+  }
+};

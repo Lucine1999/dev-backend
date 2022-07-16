@@ -14,7 +14,6 @@ export const getPublishableKey = (req, res, next) => {
 export const createPaymentIntent = async (req, res, next) => {
   const userId = res.locals.user.data.id;
   const { currency, rate } = req.body;
-  console.log(currency, rate);
   const { data, error } = await getCartItemsDB(userId);
 
   let amount = 0;
@@ -34,7 +33,6 @@ export const createPaymentIntent = async (req, res, next) => {
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

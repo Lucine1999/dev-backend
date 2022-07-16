@@ -29,7 +29,6 @@ export const createOrder = async (req, res, next) => {
       result: "success",
     });
   } catch (error) {
-    console.log("error is here");
     next(error);
   }
 };

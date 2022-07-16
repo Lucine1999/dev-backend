@@ -70,6 +70,7 @@ export const getProductsDB = async (
           },
           select: {
             id: true,
+            count: true,
           },
         },
         brand: pageType === "admin",
@@ -84,7 +85,7 @@ export const getProductsDB = async (
 
     return products;
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 

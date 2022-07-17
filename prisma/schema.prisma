@@ -24,20 +24,21 @@ model Category {
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
-  name        String     @db.VarChar(500)
-  price       Float      @db.Float
-  discount    Int        @default(0) @db.Int
-  description String?    @db.Text
-  brand       Brand?     @relation(fields: [brandId], references: [id])
-  brandId     Int?
-  category    Category?  @relation(fields: [categoryId], references: [id])
-  categoryId  Int?
-  productImg  String     @db.Text
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now()) @updatedAt
-  wishlist    Wishlist[]
-  cart        Cart[]
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(500)
+  price        Float         @db.Float
+  discount     Int           @default(0) @db.Int
+  description  String?       @db.Text
+  brand        Brand?        @relation(fields: [brandId], references: [id])
+  brandId      Int?
+  category     Category?     @relation(fields: [categoryId], references: [id])
+  categoryId   Int?
+  productImg   String        @db.Text
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  wishlist     Wishlist[]
+  cart         Cart[]
+  orderDetails OrderDetail[]
 }
 
 model User {
@@ -55,6 +56,7 @@ model User {
   wishlist        Wishlist[]
   Cart            Cart[]
   contact         Contact[]
+  order           Order[]
 }
 
 model Wishlist {
@@ -88,6 +90,26 @@ model Cart {
   count     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Order {
+  id           Int           @id @default(autoincrement())
+  amount       Int           @default(0) @db.Int
+  isDelivered  Boolean       @default(false)
+  currency     String?
+  userId       Int           @db.Int
+  user         User          @relation(fields: [userId], references: [id])
+  orderDetails OrderDetail[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+}
+
+model OrderDetail {
+  id        Int     @id @default(autoincrement())
+  orderId   Int     @db.Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int     @db.Int
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 enum Role {

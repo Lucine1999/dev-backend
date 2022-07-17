@@ -1,17 +1,19 @@
 import { Router } from "express";
 import {
-  createCartItem,
+  // createCartItem,
   getCartItems,
   deleteCartItem,
-  updateCartCount,
+  upsertCartCount,
+  deleteCartItems,
+  getCartCount,
 } from "./services.js";
-import { validate, verifyUser } from "../../helpers/common.js";
+import { checkUserAuth, validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
 const { deleteCartByIdSchema } = validations;
 
 const router = Router();
 
-router.post("/create", verifyUser, createCartItem); // ????? schema
+// router.post("/create", verifyUser, createCartItem); // ????? schema
 router.get("/getCartItems", verifyUser, getCartItems);
 router.delete(
   "/delete/:cartId",
@@ -19,6 +21,8 @@ router.delete(
   verifyUser,
   deleteCartItem,
 );
-router.put("/count/:id", verifyUser, updateCartCount);
+router.delete("/", verifyUser, deleteCartItems);
+router.put("/", verifyUser, upsertCartCount);
+router.get("/count", checkUserAuth, getCartCount);
 
 export { router as cartRoutes };

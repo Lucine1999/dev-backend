@@ -47,7 +47,6 @@ model User {
   lastName        String     @db.VarChar(250)
   email           String     @unique
   password        String     @db.Text
-  gender          String?    @db.VarChar(10)
   shippingAddress String?    @db.VarChar(250)
   billingAddress  String?    @db.VarChar(250)
   role            Role       @default(USER)

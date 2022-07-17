@@ -3,8 +3,9 @@ import {
   createWishlistItem,
   getWishlist,
   deleteWishlistItem,
+  getWishlistCount,
 } from "./services.js";
-import { validate, verifyUser } from "../../helpers/common.js";
+import { checkUserAuth, validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
 
 // import { validate } from '../../helpers/common.js'
@@ -21,5 +22,6 @@ router.delete(
   verifyUser,
   deleteWishlistItem,
 );
+router.get("/count", checkUserAuth, getWishlistCount);
 
 export { router as wishlistRoutes };

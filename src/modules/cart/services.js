@@ -1,10 +1,11 @@
 import { badRequestErrorCreator } from "../../helpers/errors.js";
 import {
   getCartItemsDB,
-  createCartItemDB,
-  deleteCartItemIdDB,
+  // createCartItemDB,
+  deleteCartItemDB,
   upsertCartDB,
   deleteCartItemsDB,
+  getCartCountDB,
 } from "./db.js";
 
 export const getCartItems = async (req, res, next) => {
@@ -17,27 +18,30 @@ export const getCartItems = async (req, res, next) => {
   }
 };
 
-export const createCartItem = async (req, res, next) => {
-  try {
-    const userId = res.locals.user.data.id;
-    const productId = +req.body.productId;
-    const createdCartItem = await createCartItemDB({ productId, userId });
-    res.json({
-      data: { id: createdCartItem.data.id },
-      type: "create",
-      result: "success",
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+// export const createCartItem = async (req, res, next) => {
+//   try {
+//     const userId = res.locals.user.data.id;
+//     const productId = +req.body.productId;
+//     const createdCartItem = await createCartItemDB({ productId, userId });
+//     res.json({
+//       data: { id: createdCartItem.data.id },
+//       type: "create",
+//       result: "success",
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 export const deleteCartItem = async (req, res, next) => {
   try {
-    const deletedItem = await deleteCartItemIdDB(+req.params.cartId);
+    const deletedItem = await deleteCartItemDB(+req.params.cartId);
+    const cartCount = await getCartCountDB(res.locals.userId);
+
     if (deletedItem.data) {
       return res.json({
         data: { id: deletedItem.data?.id },
+        count: cartCount,
       });
     }
 
@@ -52,10 +56,29 @@ export const upsertCartCount = async (req, res, next) => {
     const cartId = +req.body.cardId;
     const productId = +req.body.productId;
     const count = +req.body.count;
-    const upsertedData = await upsertCartDB(cartId, userId, productId, count);
 
+    const upsertedData = await upsertCartDB(cartId, userId, productId, count);
+    const cartCount = await getCartCountDB(userId);
     res.json({
       data: upsertedData,
+      count: cartCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCartCount = async (req, res, next) => {
+  try {
+    if (!res.locals.isAuth) {
+      return res.json({
+        count: 0,
+      });
+    }
+    const cartCount = await getCartCountDB(res.locals.userId);
+
+    return res.json({
+      count: cartCount.data,
     });
   } catch (error) {
     next(error);

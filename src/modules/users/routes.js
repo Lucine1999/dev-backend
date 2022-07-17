@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   validate,
   verifyUser,
-  // adminUserCheck,
   mainAdminUserCheck,
 } from "../../helpers/common.js";
 import validations from "./validations.js";

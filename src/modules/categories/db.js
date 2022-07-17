@@ -2,9 +2,19 @@ import { prisma } from "../../services/Prisma.js";
 
 const { category, product } = prisma;
 
-export const getAllCategoriesDB = async () => {
+export const getAllCategoriesDB = async (keyword) => {
   try {
-    const categories = await category.findMany();
+    const categories = await category.findMany({
+      where: {
+        ...{
+          name: {
+            ...(keyword && {
+              contains: keyword,
+            }),
+          },
+        },
+      },
+    });
     return {
       data: categories,
       error: null,

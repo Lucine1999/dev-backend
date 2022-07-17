@@ -48,7 +48,8 @@ export const getUserData = (req, res, next) => {
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await getAllUsersDb();
+    const keyword = req.query.keyword;
+    const users = await getAllUsersDb(keyword);
     const userData = responseDataCreator(users);
     res.json({ ...userData, isAuth: res.locals.isAuth });
   } catch (error) {

@@ -20,11 +20,20 @@ import {
 
 // eslint-disable-next-line
 export const sendUserAuth = (req, res, next) => {
+  const { firstName, lastName } = res.locals.user.data;
+
+  console.log(res.locals.user);
+
+  const user = {
+    firstName,
+    lastName,
+  };
+
   res.send({
     message: "Success",
     isAuth: res.locals.isAuth,
     role: res.locals.user.data.role,
-    userData: res.locals.user,
+    user,
   });
 };
 

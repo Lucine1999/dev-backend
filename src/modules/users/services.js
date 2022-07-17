@@ -21,6 +21,7 @@ export const checkUserAuth = (req, res, next) => {
     message: "Success",
     isAuth: res.locals.isAuth,
     role: res.locals.user.data.role,
+    userData: res.locals.user,
   });
 };
 

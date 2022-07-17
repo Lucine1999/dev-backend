@@ -14,13 +14,26 @@ import {
   updateUserRoleDB,
   deleteUserDB,
   updateUserDashboardDB,
+  updateUserPasswordDB,
+  updateUserPersonalInfoDB,
 } from "./db.js";
 
-export const checkUserAuth = (req, res) => {
+// eslint-disable-next-line
+export const sendUserAuth = (req, res, next) => {
   res.send({
     message: "Success",
     isAuth: res.locals.isAuth,
     role: res.locals.user.data.role,
+    userData: res.locals.user,
+  });
+};
+
+// eslint-disable-next-line
+export const getUserData = (req, res, next) => {
+  res.send({
+    message: "Success",
+    role: res.locals.user.data.role,
+    data: res.locals.user.data,
   });
 };
 
@@ -90,12 +103,13 @@ export const signInUser = async (req, res, next) => {
 
     const checkPassword = await comparePassword(password, user.data.password);
     if (!checkPassword) {
-      res.status(400).send({ error: "Bad Request", key: "invalidPassword" });
+      return res
+        .status(400)
+        .send({ error: "Bad Request", key: "invalidPassword" });
     }
 
     const id = user.data.id;
     const accessToken = signToken({ id }, "access");
-
     const refreshToken = signToken({ id }, "refresh");
 
     await addUserRefreshToken(id, refreshToken);
@@ -179,6 +193,56 @@ export const updateUserDashboard = async (req, res, next) => {
       userDashboardUpdated: updatedDashboard.data,
       isAuth: res.locals.isAuth,
       user: res.locals.user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const updateUserPersonalInfo = async (req, res, next) => {
+  try {
+    const userId = res.locals.user.data.id;
+
+    const updatedPersonalInfo = await updateUserPersonalInfoDB(
+      userId,
+      req.body,
+    );
+
+    if (updatedPersonalInfo?.error?.code === "P2002") {
+      return res.status(400).send({ error: "Bad Request", key: "email" });
+    }
+
+    res.json({
+      isAuth: res.locals.isAuth,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUserPassword = async (req, res, next) => {
+  try {
+    const { newPassword, password } = req.body;
+    const userId = res.locals.user.data.id;
+    const user = await getUserByIdDb(userId);
+
+    const checkPassword = await comparePassword(password, user.data.password);
+
+    if (!checkPassword) {
+      return res.status(400).send({
+        error: "Bad Request",
+        key: "wrongPassword",
+      });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    const updateData = {
+      password: hashedPassword,
+    };
+    await updateUserPasswordDB(userId, updateData);
+
+    res.status(200).send({
+      message: "success",
     });
   } catch (error) {
     next(error);

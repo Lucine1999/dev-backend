@@ -2,9 +2,34 @@ import { prisma } from "../../services/Prisma.js";
 
 const { user } = prisma;
 
-export const getAllUsersDb = async () => {
+export const getAllUsersDb = async (keyword) => {
   try {
-    const users = await user.findMany();
+    const users = await user.findMany({
+      where: {
+        role: {
+          not: "MAIN_ADMIN",
+        },
+        ...(keyword && {
+          OR: [
+            {
+              firstName: {
+                contains: keyword,
+              },
+            },
+            {
+              lastName: {
+                contains: keyword,
+              },
+            },
+            {
+              email: {
+                contains: keyword,
+              },
+            },
+          ],
+        }),
+      },
+    });
     return {
       data: users,
       error: null,

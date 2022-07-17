@@ -16,7 +16,7 @@ import {
   updateUserDashboardDB,
 } from "./db.js";
 
-export const checkUserAuth = (req, res, next) => {
+export const checkUserAuth = (req, res) => {
   res.send({
     message: "Success",
     isAuth: res.locals.isAuth,
@@ -26,7 +26,8 @@ export const checkUserAuth = (req, res, next) => {
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await getAllUsersDb();
+    const keyword = req.query.keyword;
+    const users = await getAllUsersDb(keyword);
     const userData = responseDataCreator(users);
     res.json({ ...userData, isAuth: res.locals.isAuth });
   } catch (error) {

@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   validate,
   verifyUser,
-  adminUserCheck,
+  // adminUserCheck,
   mainAdminUserCheck,
 } from "../../helpers/common.js";
 import validations from "./validations.js";
@@ -12,10 +12,13 @@ import {
   signUpUser,
   signInUser,
   signOutUser,
-  checkUserAuth,
+  sendUserAuth,
   updateUserRole,
   deleteUser,
   updateUserDashboard,
+  getUserData,
+  updateUserPersonalInfo,
+  updateUserPassword,
 } from "./services.js";
 
 const {
@@ -25,12 +28,15 @@ const {
   updateUserRoleSchema,
   deleteUserSchema,
   updateUserDashboardSchema,
+  updateUserPersonalInfoSchema,
+  updateUserPasswordSchema,
 } = validations;
 
 const router = Router();
 
-router.get("/", verifyUser, mainAdminUserCheck, getAllUsers); // ???????? petqa get all users
-router.get("/auth", verifyUser, checkUserAuth); // ???????? why checkuserauth
+router.get("/", verifyUser, mainAdminUserCheck, getAllUsers);
+router.get("/auth", verifyUser, sendUserAuth);
+router.get("/getUserData", verifyUser, getUserData);
 router.get("/:userId", validate(getUserByIdSchema), getUserById);
 router.post("/signIn", validate(loginUserSchema), signInUser);
 router.post("/signUp", validate(createUserSchema), signUpUser);
@@ -40,6 +46,18 @@ router.put(
   verifyUser,
   validate(updateUserDashboardSchema),
   updateUserDashboard,
+);
+router.patch(
+  "/personalInfo",
+  verifyUser,
+  validate(updateUserPersonalInfoSchema),
+  updateUserPersonalInfo,
+);
+router.patch(
+  "/password",
+  verifyUser,
+  validate(updateUserPasswordSchema),
+  updateUserPassword,
 );
 router.patch(
   "/user/:userId",

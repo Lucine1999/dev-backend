@@ -57,4 +57,26 @@ export default {
       newPassword: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
     }),
   },
+  updateUserPersonalInfoSchema: {
+    body: Joi.object({
+      firstName: Joi.string().min(3).max(50).required(),
+      lastName: Joi.string().min(3).max(100).required(),
+      email: Joi.string()
+        .email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "net", "ru"] },
+        })
+        .required(),
+    }),
+  },
+  updateUserPasswordSchema: {
+    body: Joi.object({
+      password: Joi.string()
+        .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+        .required(),
+      newPassword: Joi.string()
+        .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+        .required(),
+    }),
+  },
 };

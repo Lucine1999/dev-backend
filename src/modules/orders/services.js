@@ -32,22 +32,19 @@ export const createOrder = async (req, res, next) => {
       message: "Your order is being processed.",
     });
 
-    console.log(
-      new CronJob(
-        getCronDate(),
-        () => {
-          return socketIo.getIO().emit("delivering", {
-            action: "beingDelivered",
-            message: `Your order by id ${createdOrder.data.id} with amount ${
-              createdOrder.data.amount / 100
-            }${createdOrder.data.currency} is already on it's way.`,
-          });
-        },
-        null,
-        true,
-      ),
+    new CronJob(
+      getCronDate(),
+      () => {
+        return socketIo.getIO().emit("delivering", {
+          action: "beingDelivered",
+          message: `Your order by id ${createdOrder.data.id} with amount ${
+            createdOrder.data.amount / 100
+          }${createdOrder.data.currency} is already on it's way.`,
+        });
+      },
+      null,
+      true,
     );
-
     res.status(200).json({
       data: { id: createdOrder.data.id },
       type: "create",

@@ -1,5 +1,5 @@
 export const getCronDate = () => {
-  const dateToBeScheduled = new Date(Date.now() + 90000);
+  const dateToBeScheduled = new Date(Date.now() + 10000);
   const seconds = dateToBeScheduled.getSeconds();
   const minutes = dateToBeScheduled.getMinutes();
   const hours = dateToBeScheduled.getHours();

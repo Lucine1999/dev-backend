@@ -16,7 +16,7 @@ export default {
       brandId: Joi.number().integer().required(),
     }),
     body: Joi.object({
-      name: Joi.string().min(3).max(100).required(),
+      name: Joi.string().required(),
     }),
   },
 };

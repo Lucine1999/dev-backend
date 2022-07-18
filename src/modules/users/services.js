@@ -22,8 +22,6 @@ import {
 export const sendUserAuth = (req, res, next) => {
   const { firstName, lastName } = res.locals.user.data;
 
-  console.log(res.locals.user);
-
   const user = {
     firstName,
     lastName,

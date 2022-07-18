@@ -48,11 +48,20 @@ export const getProductsDB = async (
               lte: max,
             }),
           },
-          name: {
-            ...(keyword && {
-              contains: keyword,
-            }),
-          },
+          ...(keyword && {
+            OR: [
+              {
+                name: {
+                  contains: keyword,
+                },
+              },
+              {
+                description: {
+                  contains: keyword,
+                },
+              },
+            ],
+          }),
         },
       },
       include: {
@@ -85,7 +94,10 @@ export const getProductsDB = async (
 
     return products;
   } catch (error) {
-    next(error);
+    return {
+      data: null,
+      error,
+    };
   }
 };
 
@@ -117,11 +129,20 @@ export const getFilteredProductsCountDB = async (
             lte: max,
           }),
         },
-        name: {
-          ...(keyword && {
-            contains: keyword,
-          }),
-        },
+        ...(keyword && {
+          OR: [
+            {
+              name: {
+                contains: keyword,
+              },
+            },
+            {
+              description: {
+                contains: keyword,
+              },
+            },
+          ],
+        }),
       },
     },
   });

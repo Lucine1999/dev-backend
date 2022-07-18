@@ -2,9 +2,34 @@ import { prisma } from "../../services/Prisma.js";
 
 const { user } = prisma;
 
-export const getAllUsersDb = async () => {
+export const getAllUsersDb = async (keyword) => {
   try {
-    const users = await user.findMany();
+    const users = await user.findMany({
+      where: {
+        role: {
+          not: "MAIN_ADMIN",
+        },
+        ...(keyword && {
+          OR: [
+            {
+              firstName: {
+                contains: keyword,
+              },
+            },
+            {
+              lastName: {
+                contains: keyword,
+              },
+            },
+            {
+              email: {
+                contains: keyword,
+              },
+            },
+          ],
+        }),
+      },
+    });
     return {
       data: users,
       error: null,
@@ -17,7 +42,6 @@ export const getAllUsersDb = async () => {
   }
 };
 export const getUserByIdDb = async (id) => {
-  // ??????????? password mez petqa vor get anel
   try {
     const users = await user.findUnique({
       where: {
@@ -170,6 +194,49 @@ export const updateUserDashboardDB = async (id, data) => {
     });
     return {
       data: updatedDashboard,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    };
+  }
+};
+export const updateUserPersonalInfoDB = async (id, data) => {
+  try {
+    const updatedPersonalInfo = await user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        ...data,
+      },
+    });
+    return {
+      data: updatedPersonalInfo,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    };
+  }
+};
+
+export const updateUserPasswordDB = async (id, data) => {
+  try {
+    const updatedPersonalInfo = await user.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        ...data,
+      },
+    });
+    return {
+      data: updatedPersonalInfo,
       error: null,
     };
   } catch (error) {

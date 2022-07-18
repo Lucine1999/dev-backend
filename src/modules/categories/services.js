@@ -7,7 +7,8 @@ import {
 
 export const getCategories = async (req, res, next) => {
   try {
-    const categories = await getAllCategoriesDB();
+    const keyword = req.query.keyword;
+    const categories = await getAllCategoriesDB(keyword);
 
     res.json({
       categories: categories.data,

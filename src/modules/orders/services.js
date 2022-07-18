@@ -1,5 +1,8 @@
 import { badRequestErrorCreator } from "../../helpers/errors.js";
+import { socketIo } from "../../services/SocketIo.js";
 import { getOrdersDB, createOrderDB, deleteOrderByIdDB } from "./db.js";
+import { CronJob } from "../../services/Cron.js";
+import { getCronDate } from "../../helpers/getCronDate.js";
 
 export const getOrders = async (req, res, next) => {
   const userId = res.locals.user.data.id;
@@ -23,6 +26,28 @@ export const createOrder = async (req, res, next) => {
       amount,
       currency,
     });
+
+    socketIo.getIO().emit("orderCreate", {
+      action: "orderCreated",
+      message: "Your order is being processed.",
+    });
+
+    console.log(
+      new CronJob(
+        getCronDate(),
+        () => {
+          return socketIo.getIO().emit("delivering", {
+            action: "beingDelivered",
+            message: `Your order by id ${createdOrder.data.id} with amount ${
+              createdOrder.data.amount / 100
+            }${createdOrder.data.currency} is already on it's way.`,
+          });
+        },
+        null,
+        true,
+      ),
+    );
+
     res.status(200).json({
       data: { id: createdOrder.data.id },
       type: "create",

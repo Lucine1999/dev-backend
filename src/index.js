@@ -4,6 +4,7 @@ import {
   internalServerErrorCreator,
   notFoundErrorCreator,
 } from "./helpers/errors.js";
+import { socketIo } from "./services/SocketIo.js";
 
 const PORT = app.get("port");
 app.use(routes);
@@ -32,8 +33,10 @@ app.use((err, req, res, next) => {
   res.status(status).json(error);
 });
 
-app.listen(PORT, function () {
+const server = app.listen(PORT, function () {
   console.log(
     `\n🚀 Server ready at: http://localhost:${this.address().port}\n`,
   );
 });
+
+socketIo.init(server);

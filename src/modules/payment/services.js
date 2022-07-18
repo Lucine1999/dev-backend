@@ -33,6 +33,7 @@ export const createPaymentIntent = async (req, res, next) => {
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

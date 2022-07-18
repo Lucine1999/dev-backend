@@ -17,6 +17,7 @@ export const getOrdersDB = async (userId) => {
         amount: true,
         currency: true,
         isDelivered: true,
+        id: true,
       },
     });
 
@@ -50,7 +51,7 @@ export const createOrderDB = async (orderData) => {
         },
       },
     });
-
+    console.log(createdOrder);
     return {
       data: createdOrder,
       error: null,

@@ -25,7 +25,7 @@ export const createPaymentIntent = async (req, res, next) => {
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount) * 100,
+      amount: Math.trunc(amount * 100),
       currency,
       payment_method_types: ["card"],
     });

@@ -41,7 +41,9 @@ export const getOrderByIdDB = async (orderId, userId) => {
         userId: userId,
         id: orderId,
       },
-      include: {
+      select: {
+        amount: true,
+        currency: true,
         orderDetails: {
           select: {
             product: true,
@@ -49,8 +51,9 @@ export const getOrderByIdDB = async (orderId, userId) => {
         },
       },
     });
+
     return {
-      data: orderWithId.orderDetails.map(({ product }) => product),
+      data: orderWithId,
       error: null,
     };
   } catch (error) {

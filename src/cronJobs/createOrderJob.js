@@ -7,7 +7,7 @@ export const createOrderJob = (createdOrder) => {
   return new CronJob(
     getCronDate(60000),
     async () => {
-      const updatedOrder = await updateOrderStatusDB(createdOrder.data.id);
+      await updateOrderStatusDB(createdOrder.data.id);
       return socketIo.getIO().emit("delivered", {
         action: "isDelivered",
         message: `Your order with ID ${createdOrder.data.id} & with amount ${

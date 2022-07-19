@@ -25,7 +25,6 @@ export const getOrderByID = async (req, res, next) => {
   const userId = res.locals.user.data.id;
   try {
     const order = await getOrderByIdDB(Number(orderId), userId);
-    console.log(order);
     res.status(200).json({
       data: order,
       type: "create",

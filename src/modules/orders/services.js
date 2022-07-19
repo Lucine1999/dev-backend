@@ -1,6 +1,11 @@
 import { badRequestErrorCreator } from "../../helpers/errors.js";
 import { socketIo } from "../../services/SocketIo.js";
-import { getOrdersDB, createOrderDB, deleteOrderByIdDB } from "./db.js";
+import {
+  getOrdersDB,
+  createOrderDB,
+  deleteOrderByIdDB,
+  getOrderByIdDB,
+} from "./db.js";
 import { createOrderJob } from "../../cronJobs/createOrderJob.js";
 
 export const getOrders = async (req, res, next) => {
@@ -9,6 +14,22 @@ export const getOrders = async (req, res, next) => {
     const orders = await getOrdersDB(userId);
     res.status(200).json({
       data: orders.data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrderByID = async (req, res, next) => {
+  const { orderId } = req.params;
+  const userId = res.locals.user.data.id;
+  try {
+    const order = await getOrderByIdDB(Number(orderId), userId);
+    console.log(order);
+    res.status(200).json({
+      data: order,
+      type: "create",
+      result: "success",
     });
   } catch (error) {
     next(error);

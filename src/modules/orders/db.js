@@ -18,11 +18,39 @@ export const getOrdersDB = async (userId) => {
         currency: true,
         isDelivered: true,
         id: true,
+        createdAt: true,
       },
     });
 
     return {
       data: orders,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    };
+  }
+};
+
+export const getOrderByIdDB = async (orderId, userId) => {
+  try {
+    const orderWithId = await order.findFirst({
+      where: {
+        userId: userId,
+        id: orderId,
+      },
+      include: {
+        orderDetails: {
+          select: {
+            product: true,
+          },
+        },
+      },
+    });
+    return {
+      data: orderWithId.orderDetails.map(({ product }) => product),
       error: null,
     };
   } catch (error) {

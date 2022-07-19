@@ -79,7 +79,6 @@ export const createOrderDB = async (orderData) => {
         },
       },
     });
-    console.log(createdOrder);
     return {
       data: createdOrder,
       error: null,
@@ -103,6 +102,29 @@ export const deleteOrderByIdDB = async (orderId) => {
 
     return {
       data: deletedOrder,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    };
+  }
+};
+
+export const updateOrderStatusDB = async (orderId) => {
+  try {
+    const updatedOrder = await order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        isDelivered: true,
+      },
+    });
+
+    return {
+      data: updatedOrder,
       error: null,
     };
   } catch (error) {

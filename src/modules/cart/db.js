@@ -2,23 +2,6 @@ import { prisma } from "../../services/Prisma.js";
 
 const { cart } = prisma;
 
-// export const createCartItemDB = async (cartData) => {
-//   try {
-//     const createdCartItem = await cart.create({
-//       data: cartData,
-//     });
-
-//     return {
-//       data: createdCartItem,
-//       error: null,
-//     };
-//   } catch (error) {
-//     return {
-//       data: null,
-//       error,
-//     };
-//   }
-// };
 export const getCartItemsDB = async (searchKey) => {
   try {
     const list = await cart.findMany({

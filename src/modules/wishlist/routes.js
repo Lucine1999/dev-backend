@@ -8,13 +8,11 @@ import {
 import { checkUserAuth, validate, verifyUser } from "../../helpers/common.js";
 import validations from "./validations.js";
 
-// import { validate } from '../../helpers/common.js'
-// import validations from './validations.js'
 const { deleteWishlistByIdSchema } = validations;
 
 const router = Router();
 
-router.post("/create", verifyUser, createWishlistItem); // ????? schema
+router.post("/create", verifyUser, createWishlistItem);
 router.get("/getWishlist", verifyUser, getWishlist);
 router.delete(
   "/delete/:wishlistId",

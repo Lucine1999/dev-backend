@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  // createCartItem,
   getCartItems,
   deleteCartItem,
   upsertCartCount,
@@ -13,7 +12,6 @@ const { deleteCartByIdSchema } = validations;
 
 const router = Router();
 
-// router.post("/create", verifyUser, createCartItem); // ????? schema
 router.get("/getCartItems", verifyUser, getCartItems);
 router.delete(
   "/delete/:cartId",

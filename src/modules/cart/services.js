@@ -1,7 +1,6 @@
 import { badRequestErrorCreator } from "../../helpers/errors.js";
 import {
   getCartItemsDB,
-  // createCartItemDB,
   deleteCartItemDB,
   upsertCartDB,
   deleteCartItemsDB,
@@ -17,21 +16,6 @@ export const getCartItems = async (req, res, next) => {
     next(err);
   }
 };
-
-// export const createCartItem = async (req, res, next) => {
-//   try {
-//     const userId = res.locals.user.data.id;
-//     const productId = +req.body.productId;
-//     const createdCartItem = await createCartItemDB({ productId, userId });
-//     res.json({
-//       data: { id: createdCartItem.data.id },
-//       type: "create",
-//       result: "success",
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 export const deleteCartItem = async (req, res, next) => {
   try {

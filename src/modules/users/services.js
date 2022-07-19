@@ -147,9 +147,7 @@ export const updateUserRole = async (req, res, next) => {
     const updatedUser = await updateUserRoleDB(userId, req.body);
 
     res.json({
-      userUpdated: updatedUser.data,
-      isAuth: res.locals.isAuth,
-      user: res.locals.user,
+      data: updatedUser.data,
     });
   } catch (error) {
     next(error);
